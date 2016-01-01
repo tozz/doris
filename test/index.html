@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Doris Tests</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.3.4/mocha.min.css" />
+</head>
+<body>
+  <div id="test-area" style="opacity: 0; height: 0;">
+    <div id="test-1" class="a c1 c2 c3">
+      <div id="test-2">
+        <div id="test-3" class="nested parent-test"></div>
+        <div id="test-4" class="parent-test"></div>
+      </div>
+      <div class="nested"></div>
+    </div>
+    <input type="checkbox" id="test-check">
+    <div class="a b" id="data-node" data-foo-bar="test-fb" data-foo="test-f" data-invalidKey="test-invalid"></div>
+  </div>
+
+  <div id="mocha"></div>
+
+  <script src="http://chaijs.com/chai.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.3.4/mocha.min.js"></script>
+  <script src="array.from.js"></script>
+  <script src="../dist/doris.min.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="dom.js"></script>
+  <script src="data.js"></script>
+  <script src="events.js"></script>
+  <script>mocha.run();</script>
+</body>
+</html>
