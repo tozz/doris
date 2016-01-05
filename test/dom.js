@@ -67,4 +67,33 @@ describe('DOM Manipulation', function() {
     expect(doris('#test-1').toggleClass('t1').attribute('class')).to.have.string('t1');
     expect(doris('#test-1').toggleClass('t1').attribute('class')).to.not.have.string('t1');
   });
+
+  it('Should append a node', function() {
+    doris('#test-5').append('<div class="dom-added" id="appended-1"></div>');
+    doris('#test-5').append('<div class="dom-added" id="appended-2"></div>');
+    expect(doris('#test-5').find(':first-child').attribute('id')).to.equal('appended-1');
+    doris('#test-5').after('<div id="empty-testing-area"></div>');
+    doris('#empty-testing-area').append('<div id="test-node"></div>');
+    expect(doris('#empty-testing-area').find('*')[0].id).to.equal('test-node');
+    doris('#empty-testing-area').remove();
+  });
+
+  it('Should prepend a node', function() {
+    doris('#test-5').prepend('<div class="dom-added" id="prepended-1"></div>');
+    expect(doris('#test-5').find('.dom-added').get(0).attribute('id')).to.equal('prepended-1');
+    doris('#test-5').after('<div id="empty-testing-area"></div>');
+    doris('#empty-testing-area').prepend('<div id="test-node"></div>');
+    expect(doris('#empty-testing-area').find('*')[0].id).to.equal('test-node');
+    doris('#empty-testing-area').remove();
+  });
+
+  it('Should add a node before another using before', function() {
+    doris('#appended-2').before('<div class="dom-added" id="before-1"></div>');
+    expect(doris('#test-5').find('.dom-added').get(2).attribute('id')).to.equal('before-1');
+  });
+
+  it('Should add a node after another using after', function() {
+    doris('#before-1').after('<div class="dom-added" id="after-1"></div>');
+    expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('after-1');
+  });
 });

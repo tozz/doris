@@ -187,7 +187,7 @@ export default class DorisWrapper {
     for (let i in this.elements) {
       let nodes = this._stringToDOM(domString);
       for (let n in nodes) {
-        this.elements[i].parentNode.insertBefore(nodes[n], element);
+        this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i]);
       }
     }
     return this;

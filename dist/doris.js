@@ -356,7 +356,7 @@ var DorisWrapper = (function () {
       for (var i in this.elements) {
         var nodes = this._stringToDOM(domString);
         for (var n in nodes) {
-          this.elements[i].parentNode.insertBefore(nodes[n], element);
+          this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i]);
         }
       }
       return this;
