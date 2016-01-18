@@ -339,7 +339,7 @@ export default class DorisWrapper {
    * @return {self|string}
    */
   css(style, value) {
-    if (value) {
+    if (value || typeof style === 'object') {
       for (let i in this.elements) {
         if (typeof style === 'string') {
           this.elements[i].style[style] = value;
