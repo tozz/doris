@@ -290,6 +290,7 @@ export default class DorisWrapper {
   }
 
   /**
+   *
    * Sets attribute to all elements and reads from the first.
    *
    * @param {string} name
@@ -313,6 +314,19 @@ export default class DorisWrapper {
       return this;
     }
   }
+
+  /**
+   *
+   * Removes attribute from all elements.
+   *
+   * @param {string} attribute
+   */
+   removeAttribute(attribute) {
+     for (let i in this.elements) {
+       this.elements[i].removeAttribute(name);
+     }
+     return this;
+   }
 
   /**
    *
