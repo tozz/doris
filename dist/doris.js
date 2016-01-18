@@ -479,6 +479,7 @@ var DorisWrapper = (function () {
     }
 
     /**
+     *
      * Sets attribute to all elements and reads from the first.
      *
      * @param {string} name
@@ -507,6 +508,21 @@ var DorisWrapper = (function () {
 
     /**
      *
+     * Removes attribute from all elements.
+     *
+     * @param {string} attribute
+     */
+  }, {
+    key: 'removeAttribute',
+    value: function removeAttribute(attribute) {
+      for (var i in this.elements) {
+        this.elements[i].removeAttribute(name);
+      }
+      return this;
+    }
+
+    /**
+     *
      * Set CSS styles, returns the CSS property value of the first element if
      *     no value is specified.
      *
@@ -520,7 +536,7 @@ var DorisWrapper = (function () {
     value: function css(style, value) {
       var _this = this;
 
-      if (value) {
+      if (value || typeof style === 'object') {
         var _loop = function (i) {
           if (typeof style === 'string') {
             _this.elements[i].style[style] = value;

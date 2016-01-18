@@ -97,3 +97,30 @@ describe('DOM Manipulation', function() {
     expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('after-1');
   });
 });
+
+describe('CSS', function() {
+  it('Should read a style', function() {
+    expect(doris('#test-css').css('color')).to.equal('rgb(255, 0, 0)');
+  });
+
+  it('Should set a style', function() {
+    doris('#test-css').css('font-size', '10px');
+    expect(doris('#test-css').css('font-size')).to.equal('10px');
+  });
+
+  it('Should overwrite a style', function() {
+    doris('#test-css').css('color', 'green');
+    expect(doris('#test-css').css('color')).to.equal('rgb(0, 128, 0)');
+  });
+
+  it('Should set multiple styles', function() {
+    doris('#test-css').css({
+      'font-size': '11px',
+      color: 'black',
+      visibility: 'hidden'
+    });
+    expect(doris('#test-css').css('font-size')).to.equal('11px');
+    expect(doris('#test-css').css('color')).to.equal('rgb(0, 0, 0)');
+    expect(doris('#test-css').css('visibility')).to.equal('hidden');
+  });
+});
