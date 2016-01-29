@@ -1,19 +1,22 @@
-import DorisWrapper from './wrapper';
+'use strict';
+
+import DorisObject from './object';
 
 /**
- * Instantiates a DorisWrapper based on the selector input.
  *
- * @param {string|Node|window|document|DorisWrapper} nodes A CSS selector, a
+ * Instantiates a DorisObject based on the selector input.
+ *
+ * @param {string|Node|window|document|DorisObject} nodes A CSS selector, a
  *     DOM node, one of the root elements (window, document) or nother instance
- *     of a DorisWrapper (the nodes will be the same).
- * @return {DorisWrapper}
+ *     of a DorisObject (the nodes will be the same).
+ * @return {DorisObject}
  */
 export default function doris(nodes) {
   if (nodes instanceof Node) {
     // Standard DOM node.
     nodes = [nodes];
   } else if (typeof nodes === 'object' && nodes.elements) {
-    // Another DorisWrapper being passed
+    // Another DorisObject being passed
     nodes = nodes.elements;
   } else if (nodes === document || nodes === document.documentElement) {
     nodes = [document.documentElement];
@@ -22,9 +25,9 @@ export default function doris(nodes) {
   } else {
     nodes = document.querySelectorAll(nodes);
   }
-  return new DorisWrapper(nodes);
+  return new DorisObject(nodes);
 }
-doris.plugins = DorisWrapper.prototype;
+doris.plugins = DorisObject.prototype;
 
 if (typeof window !== 'undefined') {
   window.doris = doris;

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  *
  * DorisEvent is a minimal wrapper around DOM events for the purpose of event

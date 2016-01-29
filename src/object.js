@@ -1,29 +1,27 @@
+'use strict';
+
 import DorisEvent from './event';
+import Features from './features';
 
 let EventList = {};
 let elementCount = 0;
-let IE11 = (function() {
-  let p = document.createElement('p');
-  p.classList.add('x1','x2');
-  return !p.classList.contains('x2');
-})();
 
 /**
  *
- * DorisWrapper is (as the name suggest) a wrapper for all the functionality.
+ * DorisObject is (as the name suggest) a wrapper for all the functionality.
  *
- * @type {DorisWrapper}
+ * @type {DorisObject}
  */
-export default class DorisWrapper {
+export default class DorisObject {
   /**
    *
    * This class should not be instantiatied manually but rather by using the
    *     doris() helper.
    *
    * @example
-   * let body = DOM('body') // A DorisWrapper with <body> as the only element.
+   * let body = doris('body') // A DorisObject with <body> as the only element.
    * @example
-   * let p = DOM('p') // A DorisWrapper with every <p>-tag in the DOM.
+   * let p = doris('p') // A DorisObject with every <p>-tag in the DOM.
    *
    * @param {array} nodes A list of DOM-nodes to work with.
    */
@@ -40,14 +38,14 @@ export default class DorisWrapper {
 
   /**
    *
-   * Returns a new instance of a DorisWrapper for the sole element (zero based
+   * Returns a new instance of a DorisObject for the sole element (zero based
    *     index)
    *
    * @param {number} index The index for which element should be returned.
-   * @return {DorisWrapper}
+   * @return {DorisObject}
    */
   get(index) {
-    return new DorisWrapper([this.elements[index]]);
+    return new DorisObject([this.elements[index]]);
   }
 
   /**
@@ -55,13 +53,13 @@ export default class DorisWrapper {
    * For each element call callback where this is bound to the unwrapped
    *     element.
    *
-   * @param {function(node: DorisWrapper, index: number)} callback
-   * @return {DorisWrapper}
+   * @param {function(node: DorisObject, index: number)} callback
+   * @return {DorisObject}
    */
   each(callback) {
     for (let i in this.elements) {
       callback.apply(this.elements[i],
-                     [new DorisWrapper([this.elements[i]]), parseInt(i)]);
+                     [new DorisObject([this.elements[i]]), parseInt(i)]);
     }
     return this;
   }
@@ -110,7 +108,7 @@ export default class DorisWrapper {
         }
       }
     }
-    return new DorisWrapper(list);
+    return new DorisObject(list);
   }
 
   /**
@@ -118,7 +116,7 @@ export default class DorisWrapper {
    * Find matching child nodes.
    *
    * @param {string} selector CSS Selector to match.
-   * @return {DorisWrapper} The matching nodes in a DorisWrapper.
+   * @return {DorisObject} The matching nodes in a DorisObject.
    */
   find(selector) {
     let list = [];
@@ -132,7 +130,7 @@ export default class DorisWrapper {
         }
       }
     }
-    return new DorisWrapper(list);
+    return new DorisObject(list);
   }
 
   /**
@@ -242,12 +240,12 @@ export default class DorisWrapper {
    */
   addClass(...classes) {
     for (let i in this.elements) {
-      if (IE11) {
+      if (Features.classListAddMultiple) {
+        this.elements[i].classList.add(...classes);
+      } else {
         for (let c in classes) {
           this.elements[i].classList.add(classes[c]);
         }
-      } else {
-        this.elements[i].classList.add(...classes);
       }
     }
     return this;
@@ -263,12 +261,12 @@ export default class DorisWrapper {
    */
   removeClass(...classes) {
     for (let i in this.elements) {
-      if (IE11) {
+      if (Features.classListAddMultiple) {
+        this.elements[i].classList.remove(...classes);
+      } else {
         for (let c in classes) {
           this.elements[i].classList.remove(classes[c]);
         }
-      } else {
-        this.elements[i].classList.remove(...classes);
       }
     }
     return this;

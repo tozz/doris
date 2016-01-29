@@ -8,17 +8,18 @@ exports['default'] = doris;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _wrapper = require('./wrapper');
+var _object = require('./object');
 
-var _wrapper2 = _interopRequireDefault(_wrapper);
+var _object2 = _interopRequireDefault(_object);
 
 /**
- * Instantiates a DorisWrapper based on the selector input.
  *
- * @param {string|Node|window|document|DorisWrapper} nodes A CSS selector, a
+ * Instantiates a DorisObject based on the selector input.
+ *
+ * @param {string|Node|window|document|DorisObject} nodes A CSS selector, a
  *     DOM node, one of the root elements (window, document) or nother instance
- *     of a DorisWrapper (the nodes will be the same).
- * @return {DorisWrapper}
+ *     of a DorisObject (the nodes will be the same).
+ * @return {DorisObject}
  */
 
 function doris(nodes) {
@@ -26,7 +27,7 @@ function doris(nodes) {
     // Standard DOM node.
     nodes = [nodes];
   } else if (typeof nodes === 'object' && nodes.elements) {
-    // Another DorisWrapper being passed
+    // Another DorisObject being passed
     nodes = nodes.elements;
   } else if (nodes === document || nodes === document.documentElement) {
     nodes = [document.documentElement];
@@ -35,10 +36,10 @@ function doris(nodes) {
   } else {
     nodes = document.querySelectorAll(nodes);
   }
-  return new _wrapper2['default'](nodes);
+  return new _object2['default'](nodes);
 }
 
-doris.plugins = _wrapper2['default'].prototype;
+doris.plugins = _object2['default'].prototype;
 
 if (typeof window !== 'undefined') {
   window.doris = doris;
@@ -47,7 +48,9 @@ if (typeof window !== 'undefined') {
 }
 module.exports = exports['default'];
 
-},{"./wrapper":3}],2:[function(require,module,exports){
+},{"./object":4}],2:[function(require,module,exports){
+'use strict';
+
 /**
  *
  * DorisEvent is a minimal wrapper around DOM events for the purpose of event
@@ -56,15 +59,13 @@ module.exports = exports['default'];
  *
  * @type {DorisEvent}
  */
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var DorisEvent = (function () {
   /**
@@ -98,7 +99,7 @@ var DorisEvent = (function () {
    */
 
   _createClass(DorisEvent, [{
-    key: "preventDefault",
+    key: 'preventDefault',
     value: function preventDefault() {
       this.originalEvent.preventDefault();
       this.preventedDefault = true;
@@ -109,7 +110,7 @@ var DorisEvent = (function () {
      * Wrapper for stopPropagation()
      */
   }, {
-    key: "stopPropagation",
+    key: 'stopPropagation',
     value: function stopPropagation() {
       this.originalEvent.stopPropagation();
       this.propagationStopped = true;
@@ -120,7 +121,7 @@ var DorisEvent = (function () {
      * Wrapper for stopImmediatePropagation()
      */
   }, {
-    key: "stopImmediatePropagation",
+    key: 'stopImmediatePropagation',
     value: function stopImmediatePropagation() {
       this.originalEvent.stopImmediatePropagation();
       this.immediatePropagationStopped = true;
@@ -130,10 +131,29 @@ var DorisEvent = (function () {
   return DorisEvent;
 })();
 
-exports["default"] = DorisEvent;
-module.exports = exports["default"];
+exports['default'] = DorisEvent;
+module.exports = exports['default'];
 
 },{}],3:[function(require,module,exports){
+'use strict';
+
+/**
+ *
+ * A collection of feature detections required by Doris.
+ */
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = {
+  classListAddMultiple: (function (_) {
+    var p = document.createElement('p');
+    p.classList.add('x1', 'x2');
+    return p.classList.contains('x2');
+  })()
+};
+module.exports = exports['default'];
+
+},{}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -152,37 +172,36 @@ var _event = require('./event');
 
 var _event2 = _interopRequireDefault(_event);
 
+var _features = require('./features');
+
+var _features2 = _interopRequireDefault(_features);
+
 var EventList = {};
 var elementCount = 0;
-var IE11 = (function () {
-  var p = document.createElement('p');
-  p.classList.add('x1', 'x2');
-  return !p.classList.contains('x2');
-})();
 
 /**
  *
- * DorisWrapper is (as the name suggest) a wrapper for all the functionality.
+ * DorisObject is (as the name suggest) a wrapper for all the functionality.
  *
- * @type {DorisWrapper}
+ * @type {DorisObject}
  */
 
-var DorisWrapper = (function () {
+var DorisObject = (function () {
   /**
    *
    * This class should not be instantiatied manually but rather by using the
    *     doris() helper.
    *
    * @example
-   * let body = DOM('body') // A DorisWrapper with <body> as the only element.
+   * let body = doris('body') // A DorisObject with <body> as the only element.
    * @example
-   * let p = DOM('p') // A DorisWrapper with every <p>-tag in the DOM.
+   * let p = doris('p') // A DorisObject with every <p>-tag in the DOM.
    *
    * @param {array} nodes A list of DOM-nodes to work with.
    */
 
-  function DorisWrapper(nodes) {
-    _classCallCheck(this, DorisWrapper);
+  function DorisObject(nodes) {
+    _classCallCheck(this, DorisObject);
 
     /** @private */
     this.elements = Array.from(nodes);
@@ -196,17 +215,17 @@ var DorisWrapper = (function () {
 
   /**
    *
-   * Returns a new instance of a DorisWrapper for the sole element (zero based
+   * Returns a new instance of a DorisObject for the sole element (zero based
    *     index)
    *
    * @param {number} index The index for which element should be returned.
-   * @return {DorisWrapper}
+   * @return {DorisObject}
    */
 
-  _createClass(DorisWrapper, [{
+  _createClass(DorisObject, [{
     key: 'get',
     value: function get(index) {
-      return new DorisWrapper([this.elements[index]]);
+      return new DorisObject([this.elements[index]]);
     }
 
     /**
@@ -214,14 +233,14 @@ var DorisWrapper = (function () {
      * For each element call callback where this is bound to the unwrapped
      *     element.
      *
-     * @param {function(node: DorisWrapper, index: number)} callback
-     * @return {DorisWrapper}
+     * @param {function(node: DorisObject, index: number)} callback
+     * @return {DorisObject}
      */
   }, {
     key: 'each',
     value: function each(callback) {
       for (var i in this.elements) {
-        callback.apply(this.elements[i], [new DorisWrapper([this.elements[i]]), parseInt(i)]);
+        callback.apply(this.elements[i], [new DorisObject([this.elements[i]]), parseInt(i)]);
       }
       return this;
     }
@@ -275,7 +294,7 @@ var DorisWrapper = (function () {
           }
         }
       }
-      return new DorisWrapper(list);
+      return new DorisObject(list);
     }
 
     /**
@@ -283,7 +302,7 @@ var DorisWrapper = (function () {
      * Find matching child nodes.
      *
      * @param {string} selector CSS Selector to match.
-     * @return {DorisWrapper} The matching nodes in a DorisWrapper.
+     * @return {DorisObject} The matching nodes in a DorisObject.
      */
   }, {
     key: 'find',
@@ -299,7 +318,7 @@ var DorisWrapper = (function () {
           }
         }
       }
-      return new DorisWrapper(list);
+      return new DorisObject(list);
     }
 
     /**
@@ -423,14 +442,14 @@ var DorisWrapper = (function () {
       }
 
       for (var i in this.elements) {
-        if (IE11) {
-          for (var c in classes) {
-            this.elements[i].classList.add(classes[c]);
-          }
-        } else {
+        if (_features2['default'].classListAddMultiple) {
           var _elements$i$classList;
 
           (_elements$i$classList = this.elements[i].classList).add.apply(_elements$i$classList, classes);
+        } else {
+          for (var c in classes) {
+            this.elements[i].classList.add(classes[c]);
+          }
         }
       }
       return this;
@@ -452,14 +471,14 @@ var DorisWrapper = (function () {
       }
 
       for (var i in this.elements) {
-        if (IE11) {
-          for (var c in classes) {
-            this.elements[i].classList.remove(classes[c]);
-          }
-        } else {
+        if (_features2['default'].classListAddMultiple) {
           var _elements$i$classList2;
 
           (_elements$i$classList2 = this.elements[i].classList).remove.apply(_elements$i$classList2, classes);
+        } else {
+          for (var c in classes) {
+            this.elements[i].classList.remove(classes[c]);
+          }
         }
       }
       return this;
@@ -907,11 +926,11 @@ var DorisWrapper = (function () {
     }
   }]);
 
-  return DorisWrapper;
+  return DorisObject;
 })();
 
-exports['default'] = DorisWrapper;
+exports['default'] = DorisObject;
 ;
 module.exports = exports['default'];
 
-},{"./event":2}]},{},[1]);
+},{"./event":2,"./features":3}]},{},[1]);
