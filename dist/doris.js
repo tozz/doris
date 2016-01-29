@@ -38,8 +38,12 @@ function doris(nodes) {
   return new _wrapper2['default'](nodes);
 }
 
+doris.plugins = _wrapper2['default'].prototype;
+
 if (typeof window !== 'undefined') {
   window.doris = doris;
+} else {
+  throw new Error('Doris is meant to be run in a browser!');
 }
 module.exports = exports['default'];
 

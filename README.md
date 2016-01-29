@@ -16,9 +16,10 @@ Since Doris is meant to be run in a browser the testing suite is run that way, j
 
 ### Simple matching
 
+```html
+<script src="doris.min.js"></script>
+```
 ```javascript
-import doris from '<path to doris>/doris.js'
-
 let pTags = doris('p');
 let spans = pTags.find('span');
 ```

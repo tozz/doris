@@ -24,7 +24,10 @@ export default function doris(nodes) {
   }
   return new DorisWrapper(nodes);
 }
+doris.plugins = DorisWrapper.prototype;
 
 if (typeof window !== 'undefined') {
   window.doris = doris;
+} else {
+  throw new Error('Doris is meant to be run in a browser!');
 }
