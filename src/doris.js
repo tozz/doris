@@ -22,7 +22,7 @@ export default function doris(nodes) {
     nodes = [document.documentElement];
   } else if (nodes === window) {
     nodes = [window];
-  } else {
+  } else if (typeof nodes === 'string'){
     nodes = document.querySelectorAll(nodes);
   }
   return new DorisObject(nodes);
