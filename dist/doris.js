@@ -39,8 +39,6 @@ function doris(nodes) {
   return new _object2['default'](nodes);
 }
 
-doris.plugins = _object2['default'].prototype;
-
 if (typeof window !== 'undefined') {
   window.doris = doris;
 } else {
@@ -325,15 +323,15 @@ var DorisObject = (function () {
      *
      * Prepends nodes in the DOM.
      *
-     * @param {string} domString A string representation of the DOM nodes to
-     *     prepend.
+     * @param {Node|string} dom A Node or string representation of the DOM nodes to
+     *     insert. If a Node is used, only a single top level element can be specified!
      * @return {this}
      */
   }, {
     key: 'prepend',
-    value: function prepend(domString) {
+    value: function prepend(dom) {
       for (var i in this.elements) {
-        var nodes = this._stringToDOM(domString);
+        var nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
         for (var n in nodes.reverse()) {
           if (this.elements[i].firstChild) {
             this.elements[i].insertBefore(nodes[n], this.elements[i].firstChild);
@@ -349,15 +347,15 @@ var DorisObject = (function () {
      *
      * Appends nodes in the DOM.
      *
-     * @param {string} domString A string representation of the DOM nodes to
-     *     append.
+     * @param {Node|string} dom A Node or string representation of the DOM nodes to
+     *     insert. If a Node is used, only a single top level element can be specified!
      * @return {this}
      */
   }, {
     key: 'append',
-    value: function append(domString) {
+    value: function append(dom) {
       for (var i in this.elements) {
-        var nodes = this._stringToDOM(domString);
+        var nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
         for (var n in nodes) {
           this.elements[i].appendChild(nodes[n]);
         }
@@ -369,15 +367,15 @@ var DorisObject = (function () {
      *
      * Insert DOM element(s) before the elements.
      *
-     * @param {string} domString A string representation of the DOM nodes to
-     *     insert.
+     * @param {Node|string} dom A Node or string representation of the DOM nodes to
+     *     insert. If a Node is used, only a single top level element can be specified!
      * @return {this}
      */
   }, {
     key: 'before',
-    value: function before(domString) {
+    value: function before(dom) {
       for (var i in this.elements) {
-        var nodes = this._stringToDOM(domString);
+        var nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
         for (var n in nodes) {
           this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i]);
         }
@@ -389,15 +387,15 @@ var DorisObject = (function () {
      *
      * Insert DOM element(s) after the elements.
      *
-     * @param {string} domString A string representation of the DOM nodes to
-     *     insert.
+     * @param {Node|string} dom A Node or string representation of the DOM nodes to
+     *     insert. If a Node is used, only a single top level element can be specified!
      * @return {this}
      */
   }, {
     key: 'after',
-    value: function after(domString) {
+    value: function after(dom) {
       for (var i in this.elements) {
-        var nodes = this._stringToDOM(domString);
+        var nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
         for (var n in nodes.reverse()) {
           if (this.elements[i].nextSibling) {
             this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i].nextSibling);

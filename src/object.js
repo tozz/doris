@@ -137,13 +137,13 @@ export default class DorisObject {
    *
    * Prepends nodes in the DOM.
    *
-   * @param {string} domString A string representation of the DOM nodes to
-   *     prepend.
+   * @param {Node|string} dom A Node or string representation of the DOM nodes to
+   *     insert. If a Node is used, only a single top level element can be specified!
    * @return {this}
    */
-  prepend(domString) {
+  prepend(dom) {
     for (let i in this.elements) {
-      let nodes = this._stringToDOM(domString);
+      const nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
       for (let n in nodes.reverse()) {
         if (this.elements[i].firstChild) {
           this.elements[i].insertBefore(nodes[n], this.elements[i].firstChild);
@@ -159,13 +159,13 @@ export default class DorisObject {
    *
    * Appends nodes in the DOM.
    *
-   * @param {string} domString A string representation of the DOM nodes to
-   *     append.
+   * @param {Node|string} dom A Node or string representation of the DOM nodes to
+   *     insert. If a Node is used, only a single top level element can be specified!
    * @return {this}
    */
-  append(domString) {
+  append(dom) {
     for (let i in this.elements) {
-      let nodes = this._stringToDOM(domString);
+      const nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
       for (let n in nodes) {
         this.elements[i].appendChild(nodes[n])
       }
@@ -177,13 +177,13 @@ export default class DorisObject {
    *
    * Insert DOM element(s) before the elements.
    *
-   * @param {string} domString A string representation of the DOM nodes to
-   *     insert.
+   * @param {Node|string} dom A Node or string representation of the DOM nodes to
+   *     insert. If a Node is used, only a single top level element can be specified!
    * @return {this}
    */
-  before(domString) {
+  before(dom) {
     for (let i in this.elements) {
-      let nodes = this._stringToDOM(domString);
+      const nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
       for (let n in nodes) {
         this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i]);
       }
@@ -195,13 +195,13 @@ export default class DorisObject {
    *
    * Insert DOM element(s) after the elements.
    *
-   * @param {string} domString A string representation of the DOM nodes to
-   *     insert.
+   * @param {Node|string} dom A Node or string representation of the DOM nodes to
+   *     insert. If a Node is used, only a single top level element can be specified!
    * @return {this}
    */
-  after(domString) {
+  after(dom) {
     for (let i in this.elements) {
-      let nodes = this._stringToDOM(domString);
+      const nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
       for (let n in nodes.reverse()) {
         if (this.elements[i].nextSibling) {
           this.elements[i]
@@ -615,7 +615,7 @@ export default class DorisObject {
    * @return {Array<Node>}
    */
   _stringToDOM(string) {
-    var fragment = document.createDocumentFragment();
+    let fragment = document.createDocumentFragment();
     fragment.appendChild(document.createElement('body'));
     fragment.childNodes[0].innerHTML = string;
     return Array.from(fragment.childNodes[0].childNodes);

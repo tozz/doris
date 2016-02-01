@@ -68,7 +68,7 @@ describe('DOM Manipulation', function() {
     expect(doris('#test-1').toggleClass('t1').attribute('class')).to.not.have.string('t1');
   });
 
-  it('Should append a node', function() {
+  it('Should append a node using a string representation', function() {
     doris('#test-5').append('<div class="dom-added" id="appended-1"></div>');
     doris('#test-5').append('<div class="dom-added" id="appended-2"></div>');
     expect(doris('#test-5').find(':first-child').attribute('id')).to.equal('appended-1');
@@ -78,7 +78,14 @@ describe('DOM Manipulation', function() {
     doris('#empty-testing-area').remove();
   });
 
-  it('Should prepend a node', function() {
+  it('Should append a node using a dom representation', function() {
+    var node = document.createElement('p');
+    node.id = 'appended-dom-1';
+    doris('#test-5').append(node);
+    expect(doris('#test-5 p').attribute('id')).to.equal('appended-dom-1');
+  });
+
+  it('Should prepend a node using a string representation', function() {
     doris('#test-5').prepend('<div class="dom-added" id="prepended-1"></div>');
     expect(doris('#test-5').find('.dom-added').get(0).attribute('id')).to.equal('prepended-1');
     doris('#test-5').after('<div id="empty-testing-area"></div>');
@@ -87,14 +94,37 @@ describe('DOM Manipulation', function() {
     doris('#empty-testing-area').remove();
   });
 
-  it('Should add a node before another using before', function() {
+  it('Should prepend a node using a dom representation', function() {
+    var node = document.createElement('p');
+    node.id = 'prepended-dom-1';
+    doris('#test-5').prepend(node);
+    expect(doris('#test-5 p').attribute('id')).to.equal('prepended-dom-1');
+  });
+
+  it('Should add a node by string representation before another', function() {
     doris('#appended-2').before('<div class="dom-added" id="before-1"></div>');
     expect(doris('#test-5').find('.dom-added').get(2).attribute('id')).to.equal('before-1');
   });
 
-  it('Should add a node after another using after', function() {
+  it('Should add a node by dom representation before another', function() {
+    var node = document.createElement('p');
+    node.id = 'before-dom-1';
+    node.classList.add('dom-added');
+    doris('#appended-2').before(node);
+    expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('before-dom-1');
+  });
+
+  it('Should add a node by string representation after another', function() {
     doris('#before-1').after('<div class="dom-added" id="after-1"></div>');
     expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('after-1');
+  });
+
+  it('Should add a node by dom representation after another', function() {
+    var node = document.createElement('p');
+    node.id = 'after-dom-1';
+    node.classList.add('dom-added');
+    doris('#before-1').after(node);
+    expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('after-dom-1');
   });
 });
 

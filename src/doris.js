@@ -27,7 +27,6 @@ export default function doris(nodes) {
   }
   return new DorisObject(nodes);
 }
-doris.plugins = DorisObject.prototype;
 
 if (typeof window !== 'undefined') {
   window.doris = doris;
