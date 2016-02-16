@@ -126,6 +126,44 @@ describe('DOM Manipulation', function() {
     doris('#before-1').after(node);
     expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('after-dom-1');
   });
+
+  it('Should create a doris object when supplied with a non-valid CSS selector string', function() {
+    var d = doris('<div id="first"><div id="second"><div id="third"></div></div></div>');
+    expect(d.get(0).attribute('id')).to.equal('first');
+    expect(d.find('#second').attribute('id')).to.equal('second');
+    expect(d.find('#third').attribute('id')).to.equal('third');
+  });
+
+  it('Should return a string representation of the markup when calling toHTML()', function() {
+    var d = doris('#test-to-string');
+    expect(d.toHTML()).to.equal('<div id="test-to-string"><div id="tts1"><div id="tts2"></div></div><div id="tts3"></div></div>');
+    var d = doris('<div id="tts1"></div><div id="tts2"></div>');
+    expect(d.toHTML()).to.equal('<div id="tts1"></div><div id="tts2"></div>');
+  });
+
+  it('Should replace a single node with a single replacement node', function() {
+    var d = doris('#test-replace-1');
+    var r = doris('<div id="test-replace-new"></div>');
+    d.replace(r);
+    expect(doris('#test-replace').find('#test-replace-1').elements.length).to.equal(0);
+  });
+
+  it('Should replace multiple nodes with a single replacement node', function() {
+    var d = doris('.test-replace-many-single');
+    var r = doris('<div class="test-replace-many-single-replaced"></div>');
+    d.replace(r);
+    expect(doris('#test-replace').find('.test-replace-many-single').elements.length).to.equal(0);
+    expect(doris('#test-replace').find('.test-replace-many-single-replaced').elements.length).to.equal(2);
+  });
+
+  it('Should replace multiple nodes with a multiple replacement nodes', function() {
+    var d = doris('.test-replace-many-many');
+    var r = doris('<div class="test-replace-many-many-replaced"><p>Hej</p></div><div class="test-replace-many-many-replaced"></div>');
+    var n = d.replace(r);
+    expect(doris('#test-replace').find('.test-replace-many-many').elements.length).to.equal(0);
+    expect(doris('#test-replace').find('.test-replace-many-many-replaced').elements.length).to.equal(4);
+    expect(n.elements.length).to.equal(4);
+  });
 });
 
 describe('CSS', function() {

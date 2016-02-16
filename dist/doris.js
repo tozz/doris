@@ -6,11 +6,17 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports['default'] = doris;
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _object = require('./object');
 
 var _object2 = _interopRequireDefault(_object);
+
+var _utils = require('./utils');
+
+var utils = _interopRequireWildcard(_utils);
 
 /**
  *
@@ -34,7 +40,15 @@ function doris(nodes) {
   } else if (nodes === window) {
     nodes = [window];
   } else if (typeof nodes === 'string') {
-    nodes = document.querySelectorAll(nodes);
+    try {
+      nodes = document.querySelectorAll(nodes);
+    } catch (e) {
+      if (e instanceof DOMException) {
+        nodes = utils.stringToDOM(nodes);
+      } else {
+        throw new Error('Invalid Doris argument!');
+      }
+    }
   }
   return new _object2['default'](nodes);
 }
@@ -46,7 +60,7 @@ if (typeof window !== 'undefined') {
 }
 module.exports = exports['default'];
 
-},{"./object":4}],2:[function(require,module,exports){
+},{"./object":4,"./utils":5}],2:[function(require,module,exports){
 'use strict';
 
 /**
@@ -162,6 +176,8 @@ var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = 
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -173,6 +189,10 @@ var _event2 = _interopRequireDefault(_event);
 var _features = require('./features');
 
 var _features2 = _interopRequireDefault(_features);
+
+var _utils = require('./utils');
+
+var utils = _interopRequireWildcard(_utils);
 
 var EventList = {};
 var elementCount = 0;
@@ -331,7 +351,7 @@ var DorisObject = (function () {
     key: 'prepend',
     value: function prepend(dom) {
       for (var i in this.elements) {
-        var nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
+        var nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
         for (var n in nodes.reverse()) {
           if (this.elements[i].firstChild) {
             this.elements[i].insertBefore(nodes[n], this.elements[i].firstChild);
@@ -355,7 +375,7 @@ var DorisObject = (function () {
     key: 'append',
     value: function append(dom) {
       for (var i in this.elements) {
-        var nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
+        var nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
         for (var n in nodes) {
           this.elements[i].appendChild(nodes[n]);
         }
@@ -375,7 +395,7 @@ var DorisObject = (function () {
     key: 'before',
     value: function before(dom) {
       for (var i in this.elements) {
-        var nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
+        var nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
         for (var n in nodes) {
           this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i]);
         }
@@ -395,7 +415,7 @@ var DorisObject = (function () {
     key: 'after',
     value: function after(dom) {
       for (var i in this.elements) {
-        var nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
+        var nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
         for (var n in nodes.reverse()) {
           if (this.elements[i].nextSibling) {
             this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i].nextSibling);
@@ -409,7 +429,7 @@ var DorisObject = (function () {
 
     /**
      *
-     * Removes every element in elements from the DOM.
+     * Removes every element in elements from the DOM and removes the references.
      *
      * @return {this}
      */
@@ -422,6 +442,52 @@ var DorisObject = (function () {
         delete this[i];
       }
       return this;
+    }
+
+    /**
+     *
+     * Replaces every element, depending on how many elements are in the collection
+     * the supplied nodes will be cloned. The elements in the original Object
+     * aren't updated, after replacing content you probably want to create a new
+     * doris object that matches on the new content.
+     *
+     * @param {string|DorisObject} A string representation of the DOM you want to
+     * use as the replacement or a Doris instance.
+     * @return {DorisObject} A new insance with the new elements as the "selector".
+     */
+  }, {
+    key: 'replace',
+    value: function replace(replacement) {
+      var _this = this;
+
+      if (typeof replacement === 'string') {
+        replacement = doris(replacement);
+      }
+
+      var newCollection = [];
+
+      var m = this.elements.length > 1;
+
+      for (var e in this.elements) {
+        if (replacement.elements.length === 1) {
+          var s = m ? replacement.elements[0].cloneNode(true) : replacement.elements[0];
+          this.elements[e].parentNode.replaceChild(s, this.elements[e]);
+          newCollection.push(s);
+        } else {
+          (function () {
+            var previousNode = _this.get(e);
+            replacement.each(function (n) {
+              var s = m ? this.cloneNode(true) : this;
+              newCollection.push(s);
+              previousNode.after(s);
+              previousNode = doris(s);
+            });
+            _this.get(e).remove();
+          })();
+        }
+      }
+
+      return doris(newCollection);
     }
 
     /**
@@ -555,15 +621,15 @@ var DorisObject = (function () {
   }, {
     key: 'css',
     value: function css(style, value) {
-      var _this = this;
+      var _this2 = this;
 
       if (value || typeof style === 'object') {
         var _loop = function (i) {
           if (typeof style === 'string') {
-            _this.elements[i].style[style] = value;
+            _this2.elements[i].style[style] = value;
           } else {
             Object.keys(style).forEach(function (s) {
-              _this.elements[i].style[s] = style[s];
+              _this2.elements[i].style[s] = style[s];
             });
           }
         };
@@ -870,17 +936,18 @@ var DorisObject = (function () {
 
     /**
      *
-     * Converts a string to DOM nodes.
-     * @private
-     * @return {Array<Node>}
+     * Returns a string representation of the elements.
+     * @return {string}
      */
   }, {
-    key: '_stringToDOM',
-    value: function _stringToDOM(string) {
+    key: 'toHTML',
+    value: function toHTML() {
       var fragment = document.createDocumentFragment();
       fragment.appendChild(document.createElement('body'));
-      fragment.childNodes[0].innerHTML = string;
-      return Array.from(fragment.childNodes[0].childNodes);
+      for (var i in this.elements) {
+        fragment.childNodes[0].appendChild(this.elements[i]);
+      }
+      return fragment.childNodes[0].innerHTML;
     }
 
     /**
@@ -931,4 +998,25 @@ exports['default'] = DorisObject;
 ;
 module.exports = exports['default'];
 
-},{"./event":2,"./features":3}]},{},[1]);
+},{"./event":2,"./features":3,"./utils":5}],5:[function(require,module,exports){
+'use strict';
+
+/**
+ *
+ * Converts a string to DOM nodes.
+ * @param {string} A string representation of the DOM.
+ * @return {Array<Node>}
+ */
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.stringToDOM = stringToDOM;
+
+function stringToDOM(string) {
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(document.createElement('body'));
+  fragment.childNodes[0].innerHTML = string;
+  return Array.from(fragment.childNodes[0].childNodes);
+}
+
+},{}]},{},[1]);

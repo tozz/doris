@@ -1,6 +1,7 @@
 'use strict';
 
 import DorisObject from './object';
+import * as utils from './utils';
 
 /**
  *
@@ -23,7 +24,15 @@ export default function doris(nodes) {
   } else if (nodes === window) {
     nodes = [window];
   } else if (typeof nodes === 'string'){
-    nodes = document.querySelectorAll(nodes);
+    try {
+      nodes = document.querySelectorAll(nodes);
+    } catch (e) {
+      if (e instanceof DOMException) {
+        nodes = utils.stringToDOM(nodes);
+      } else {
+        throw new Error('Invalid Doris argument!');
+      }
+    }
   }
   return new DorisObject(nodes);
 }

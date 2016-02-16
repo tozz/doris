@@ -2,6 +2,7 @@
 
 import DorisEvent from './event';
 import Features from './features';
+import * as utils from './utils';
 
 let EventList = {};
 let elementCount = 0;
@@ -143,7 +144,7 @@ export default class DorisObject {
    */
   prepend(dom) {
     for (let i in this.elements) {
-      const nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
+      const nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
       for (let n in nodes.reverse()) {
         if (this.elements[i].firstChild) {
           this.elements[i].insertBefore(nodes[n], this.elements[i].firstChild);
@@ -165,7 +166,7 @@ export default class DorisObject {
    */
   append(dom) {
     for (let i in this.elements) {
-      const nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
+      const nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
       for (let n in nodes) {
         this.elements[i].appendChild(nodes[n])
       }
@@ -183,7 +184,7 @@ export default class DorisObject {
    */
   before(dom) {
     for (let i in this.elements) {
-      const nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
+      const nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
       for (let n in nodes) {
         this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i]);
       }
@@ -201,7 +202,7 @@ export default class DorisObject {
    */
   after(dom) {
     for (let i in this.elements) {
-      const nodes = typeof dom === 'string' ? this._stringToDOM(dom) : [dom];
+      const nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
       for (let n in nodes.reverse()) {
         if (this.elements[i].nextSibling) {
           this.elements[i]
@@ -217,7 +218,7 @@ export default class DorisObject {
 
   /**
    *
-   * Removes every element in elements from the DOM.
+   * Removes every element in elements from the DOM and removes the references.
    *
    * @return {this}
    */
@@ -228,6 +229,46 @@ export default class DorisObject {
       delete this[i];
     }
     return this;
+  }
+
+  /**
+   *
+   * Replaces every element, depending on how many elements are in the collection
+   * the supplied nodes will be cloned. The elements in the original Object
+   * aren't updated, after replacing content you probably want to create a new
+   * doris object that matches on the new content.
+   *
+   * @param {string|DorisObject} A string representation of the DOM you want to
+   * use as the replacement or a Doris instance.
+   * @return {DorisObject} A new instance with the replacement elements.
+   */
+  replace(replacement) {
+    if (typeof replacement === 'string') {
+      replacement = doris(replacement);
+    }
+
+    let newCollection = [];
+
+    const m = this.elements.length > 1;
+
+    for (let e in this.elements) {
+      if (replacement.elements.length === 1) {
+        let s = m ? replacement.elements[0].cloneNode(true) : replacement.elements[0]
+        this.elements[e].parentNode.replaceChild(s, this.elements[e]);
+        newCollection.push(s);
+      } else {
+        let previousNode = this.get(e);
+        replacement.each(function(n) {
+          let s = m ? this.cloneNode(true) : this;
+          newCollection.push(s)
+          previousNode.after(s);
+          previousNode = doris(s);
+        })
+        this.get(e).remove();
+      }
+    }
+
+    return doris(newCollection);
   }
 
   /**
@@ -610,15 +651,16 @@ export default class DorisObject {
 
   /**
    *
-   * Converts a string to DOM nodes.
-   * @private
-   * @return {Array<Node>}
+   * Returns a string representation of the elements.
+   * @return {string}
    */
-  _stringToDOM(string) {
+  toHTML() {
     let fragment = document.createDocumentFragment();
     fragment.appendChild(document.createElement('body'));
-    fragment.childNodes[0].innerHTML = string;
-    return Array.from(fragment.childNodes[0].childNodes);
+    for (let i in this.elements) {
+      fragment.childNodes[0].appendChild(this.elements[i]);
+    }
+    return fragment.childNodes[0].innerHTML;
   }
 
   /**
