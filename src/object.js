@@ -273,6 +273,26 @@ export default class DorisObject {
 
   /**
    *
+   * Sets the innerHTML of every element.
+   *
+   * @param {string|Node} A string representation of the DOM to use as replacement
+   * or a Node representation that will to converted to markup.
+   * @return {this}
+   */
+  html(html) {
+    if (typeof html !== 'string') {
+      html = doris(html).toHTML();
+    }
+
+    for (let e in this.elements) {
+      this.elements[e].innerHTML = html;
+    }
+
+    return this;
+  }
+
+  /**
+   *
    * Adds class(es) to every element. This is using the native classList
    *     implementation.
    *

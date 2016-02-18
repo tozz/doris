@@ -453,7 +453,7 @@ var DorisObject = (function () {
      *
      * @param {string|DorisObject} A string representation of the DOM you want to
      * use as the replacement or a Doris instance.
-     * @return {DorisObject} A new insance with the new elements as the "selector".
+     * @return {DorisObject} A new instance with the replacement elements.
      */
   }, {
     key: 'replace',
@@ -488,6 +488,28 @@ var DorisObject = (function () {
       }
 
       return doris(newCollection);
+    }
+
+    /**
+     *
+     * Sets the innerHTML of every element.
+     *
+     * @param {string|Node} A string representation of the DOM to use as replacement
+     * or a Node representation that will to converted to markup.
+     * @return {this}
+     */
+  }, {
+    key: 'html',
+    value: function html(_html) {
+      if (typeof _html !== 'string') {
+        _html = doris(_html).toHTML();
+      }
+
+      for (var e in this.elements) {
+        this.elements[e].innerHTML = _html;
+      }
+
+      return this;
     }
 
     /**

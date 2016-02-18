@@ -164,6 +164,16 @@ describe('DOM Manipulation', function() {
     expect(doris('#test-replace').find('.test-replace-many-many-replaced').elements.length).to.equal(4);
     expect(n.elements.length).to.equal(4);
   });
+
+  it('Should set the innerHTML when using a string', function() {
+    expect(doris('#test-html').html('<p>test</p>')[0].innerHTML).to.equal('<p>test</p>');
+  });
+
+  it('Should set the innerHTML when using a node', function() {
+    var x = document.createElement('span');
+    x.innerHTML = 'test';
+    expect(doris('#test-html').html(x)[0].innerHTML).to.equal('<span>test</span>');
+  });
 });
 
 describe('CSS', function() {
