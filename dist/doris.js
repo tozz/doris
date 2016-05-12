@@ -941,10 +941,10 @@ var DorisObject = (function () {
     key: 'trigger',
     value: function trigger(event) {
       var e = undefined;
-      if (event === 'dorisclick') {
+      if (event === 'click') {
         // From https://developer.mozilla.org/samples/domref/dispatchEvent.html
         e = document.createEvent("MouseEvents");
-        e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       } else {
         e = document.createEvent('Event');
         e.initEvent(event, true, true);

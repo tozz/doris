@@ -653,10 +653,10 @@ export default class DorisObject {
    */
   trigger(event) {
     let e;
-    if (event === 'dorisclick') {
+    if (event === 'click') {
       // From https://developer.mozilla.org/samples/domref/dispatchEvent.html
       e = document.createEvent("MouseEvents");
-      e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false,
+      e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false,
                        false, false, false, 0, null);
     } else {
       e = document.createEvent('Event');

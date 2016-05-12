@@ -41,8 +41,13 @@ describe('Events', function() {
     doris('#test-check:not(:checked)').on('click', function(e) {
       e.preventDefault();
     });
-    doris('#test-check:not(:checked)').trigger('dorisclick')
+    doris('#test-check:not(:checked)').trigger('click')
     expect(doris('#test-check:not(:checked)').elements.length).to.equal(1);
+  });
+
+  it('Should trigger a click event', function() {
+    doris('#test-check2').trigger('click');
+    expect(doris('#test-check2:checked').elements.length).to.equal(1);
   });
 
   it('Should not bubble when calling stopPropagation()', function() {
