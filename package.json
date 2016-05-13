@@ -1,7 +1,7 @@
 {
   "name": "doris",
   "description": "A small jQuery-like utility framework for traversing and manipulating the DOM with some basic event handling.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "license": "MIT",
   "author": "Erik Johansson <tozz@tozz.org>",
   "repository": {
