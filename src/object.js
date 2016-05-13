@@ -532,7 +532,7 @@ export default class DorisObject {
               eventData.selector !== '*' &&
               this._matchSelector(target, eventData.selector)) {
 
-              eventData.callback(event);
+              eventData.callback.call(new DorisObject([event.target]), event);
               if (eventData.callback.one) {
                 this.off(event.type, selector, eventData.callback.one, id);
               }
