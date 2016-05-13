@@ -3,7 +3,7 @@
 /**
  *
  * Converts a string to DOM nodes.
- * @param {string} A string representation of the DOM.
+ * @param {string} string A string representation of the DOM.
  * @return {Array<Node>}
  */
 export function stringToDOM(string) {

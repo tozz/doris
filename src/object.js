@@ -237,7 +237,7 @@ export default class DorisObject {
    * aren't updated, after replacing content you probably want to create a new
    * doris object that matches on the new content.
    *
-   * @param {string|DorisObject} A string representation of the DOM you want to
+   * @param {string|DorisObject} replacement A string representation of the DOM you want to
    * use as the replacement or a Doris instance.
    * @return {DorisObject} A new instance with the replacement elements.
    */
@@ -267,24 +267,53 @@ export default class DorisObject {
       }
     }
 
-    return doris(newCollection);
+    return new DorisObject(newCollection);
   }
 
   /**
    *
-   * Sets the innerHTML of every element.
+   * Returns the HTML content of the first element or sets the innerHTML
+   * of every matched element.
    *
-   * @param {string|Node} A string representation of the DOM to use as replacement
+   * @param {string|Node} [html] A string representation of the DOM to use as replacement
    * or a Node representation that will to converted to markup.
-   * @return {this}
+   * @return {string|this}
    */
   html(html) {
+    if (html === undefined) {
+      return this.elements[0].innerHTML;
+    }
+
     if (typeof html !== 'string') {
       html = doris(html).toHTML();
     }
 
     for (let e in this.elements) {
       this.elements[e].innerHTML = html;
+    }
+
+    return this;
+  }
+
+  /**
+   *
+   * Returns the textContent of the matching elements or sets the textContent
+   * of the first matching element.
+   *
+   * @param {string|Node} [text] Text to set in all matching elements.
+   * @return {string|this}
+   */
+  text(text) {
+    if (text === undefined) {
+      let content = '';
+      for (let e in this.elements) {
+        content += this.elements[e].textContent;
+      }
+      return content;
+    }
+
+    for (let e in this.elements) {
+      this.elements[e].textContent = text;
     }
 
     return this;

@@ -450,7 +450,7 @@ var DorisObject = (function () {
      * aren't updated, after replacing content you probably want to create a new
      * doris object that matches on the new content.
      *
-     * @param {string|DorisObject} A string representation of the DOM you want to
+     * @param {string|DorisObject} replacement A string representation of the DOM you want to
      * use as the replacement or a Doris instance.
      * @return {DorisObject} A new instance with the replacement elements.
      */
@@ -486,26 +486,57 @@ var DorisObject = (function () {
         }
       }
 
-      return doris(newCollection);
+      return new DorisObject(newCollection);
     }
 
     /**
      *
-     * Sets the innerHTML of every element.
+     * Returns the HTML content of the first element or sets the innerHTML
+     * of every matched element.
      *
-     * @param {string|Node} A string representation of the DOM to use as replacement
+     * @param {string|Node} [html] A string representation of the DOM to use as replacement
      * or a Node representation that will to converted to markup.
-     * @return {this}
+     * @return {string|this}
      */
   }, {
     key: 'html',
     value: function html(_html) {
+      if (_html === undefined) {
+        return this.elements[0].innerHTML;
+      }
+
       if (typeof _html !== 'string') {
         _html = doris(_html).toHTML();
       }
 
       for (var e in this.elements) {
         this.elements[e].innerHTML = _html;
+      }
+
+      return this;
+    }
+
+    /**
+     *
+     * Returns the textContent of the matching elements or sets the textContent
+     * of the first matching element.
+     *
+     * @param {string|Node} [text] Text to set in all matching elements.
+     * @return {string|this}
+     */
+  }, {
+    key: 'text',
+    value: function text(_text) {
+      if (_text === undefined) {
+        var content = '';
+        for (var e in this.elements) {
+          content += this.elements[e].textContent;
+        }
+        return content;
+      }
+
+      for (var e in this.elements) {
+        this.elements[e].textContent = _text;
       }
 
       return this;
@@ -1025,7 +1056,7 @@ module.exports = exports['default'];
 /**
  *
  * Converts a string to DOM nodes.
- * @param {string} A string representation of the DOM.
+ * @param {string} string A string representation of the DOM.
  * @return {Array<Node>}
  */
 Object.defineProperty(exports, '__esModule', {

@@ -165,14 +165,33 @@ describe('DOM Manipulation', function() {
     expect(n.elements.length).to.equal(4);
   });
 
-  it('Should set the innerHTML when using a string', function() {
+  it('Should set the innerHTML when using a string with html()', function() {
     expect(doris('#test-html').html('<p>test</p>').get(0).innerHTML).to.equal('<p>test</p>');
   });
 
-  it('Should set the innerHTML when using a node', function() {
+  it('Should set the innerHTML when using a node with html()', function() {
     var x = document.createElement('span');
     x.innerHTML = 'test';
     expect(doris('#test-html').html(x).get(0).innerHTML).to.equal('<span>test</span>');
+  });
+
+  it('Should return innerHTML when using html() without an argument', function() {
+    doris('#test-html').html('<p>test</p>');
+    expect(doris('#test-html').html()).to.equal('<p>test</p>');
+  });
+
+  it('Should set the textContent with text()', function() {
+    doris('#test-text').text('<p>markup should be text</p>');
+    expect(doris('#test-text').get(0).textContent).to.equal('<p>markup should be text</p>');
+  });
+
+  it('Should get the textContent of all matching elements with text()', function() {
+    expect(doris('.test-text').text()).to.equal('abc');
+  });
+
+  it('Should set the textContent of all matching elements with text()', function() {
+    doris('.test-text').text('a');
+    expect(doris('.test-text').text()).to.equal('aaa');
   });
 });
 
