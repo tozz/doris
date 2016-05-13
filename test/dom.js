@@ -74,7 +74,7 @@ describe('DOM Manipulation', function() {
     expect(doris('#test-5').find(':first-child').attribute('id')).to.equal('appended-1');
     doris('#test-5').after('<div id="empty-testing-area"></div>');
     doris('#empty-testing-area').append('<div id="test-node"></div>');
-    expect(doris('#empty-testing-area').find('*')[0].id).to.equal('test-node');
+    expect(doris('#empty-testing-area').find('*').get(0).id).to.equal('test-node');
     doris('#empty-testing-area').remove();
   });
 
@@ -87,7 +87,7 @@ describe('DOM Manipulation', function() {
 
   it('Should prepend a node using a string representation', function() {
     doris('#test-5').prepend('<div class="dom-added" id="prepended-1"></div>');
-    expect(doris('#test-5').find('.dom-added').get(0).attribute('id')).to.equal('prepended-1');
+    expect(doris('#test-5').find('.dom-added').get(0).id).to.equal('prepended-1');
     doris('#test-5').after('<div id="empty-testing-area"></div>');
     doris('#empty-testing-area').prepend('<div id="test-node"></div>');
     expect(doris('#empty-testing-area').find('*')[0].id).to.equal('test-node');
@@ -103,7 +103,7 @@ describe('DOM Manipulation', function() {
 
   it('Should add a node by string representation before another', function() {
     doris('#appended-2').before('<div class="dom-added" id="before-1"></div>');
-    expect(doris('#test-5').find('.dom-added').get(2).attribute('id')).to.equal('before-1');
+    expect(doris('#test-5').find('.dom-added').get(2).id).to.equal('before-1');
   });
 
   it('Should add a node by dom representation before another', function() {
@@ -111,12 +111,12 @@ describe('DOM Manipulation', function() {
     node.id = 'before-dom-1';
     node.classList.add('dom-added');
     doris('#appended-2').before(node);
-    expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('before-dom-1');
+    expect(doris('#test-5').find('.dom-added').get(3).id).to.equal('before-dom-1');
   });
 
   it('Should add a node by string representation after another', function() {
     doris('#before-1').after('<div class="dom-added" id="after-1"></div>');
-    expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('after-1');
+    expect(doris('#test-5').find('.dom-added').get(3).id).to.equal('after-1');
   });
 
   it('Should add a node by dom representation after another', function() {
@@ -124,12 +124,12 @@ describe('DOM Manipulation', function() {
     node.id = 'after-dom-1';
     node.classList.add('dom-added');
     doris('#before-1').after(node);
-    expect(doris('#test-5').find('.dom-added').get(3).attribute('id')).to.equal('after-dom-1');
+    expect(doris('#test-5').find('.dom-added').get(3).id).to.equal('after-dom-1');
   });
 
   it('Should create a doris object when supplied with a non-valid CSS selector string', function() {
     var d = doris('<div id="first"><div id="second"><div id="third"></div></div></div>');
-    expect(d.get(0).attribute('id')).to.equal('first');
+    expect(d.get(0).id).to.equal('first');
     expect(d.find('#second').attribute('id')).to.equal('second');
     expect(d.find('#third').attribute('id')).to.equal('third');
   });
@@ -156,7 +156,7 @@ describe('DOM Manipulation', function() {
     expect(doris('#test-replace').find('.test-replace-many-single-replaced').elements.length).to.equal(2);
   });
 
-  it('Should replace multiple nodes with a multiple replacement nodes', function() {
+  it('Should replace multiple nodes with multiple replacement nodes', function() {
     var d = doris('.test-replace-many-many');
     var r = doris('<div class="test-replace-many-many-replaced"><p>Hej</p></div><div class="test-replace-many-many-replaced"></div>');
     var n = d.replace(r);
@@ -166,13 +166,13 @@ describe('DOM Manipulation', function() {
   });
 
   it('Should set the innerHTML when using a string', function() {
-    expect(doris('#test-html').html('<p>test</p>')[0].innerHTML).to.equal('<p>test</p>');
+    expect(doris('#test-html').html('<p>test</p>').get(0).innerHTML).to.equal('<p>test</p>');
   });
 
   it('Should set the innerHTML when using a node', function() {
     var x = document.createElement('span');
     x.innerHTML = 'test';
-    expect(doris('#test-html').html(x)[0].innerHTML).to.equal('<span>test</span>');
+    expect(doris('#test-html').html(x).get(0).innerHTML).to.equal('<span>test</span>');
   });
 });
 

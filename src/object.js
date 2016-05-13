@@ -39,14 +39,13 @@ export default class DorisObject {
 
   /**
    *
-   * Returns a new instance of a DorisObject for the sole element (zero based
-   *     index)
+   * Returns the matched DOM element (zero based index)
    *
    * @param {number} index The index for which element should be returned.
-   * @return {DorisObject}
+   * @return {Node|undefined}
    */
   get(index) {
-    return new DorisObject([this.elements[index]]);
+    return this.elements[index];
   }
 
   /**
@@ -257,14 +256,14 @@ export default class DorisObject {
         this.elements[e].parentNode.replaceChild(s, this.elements[e]);
         newCollection.push(s);
       } else {
-        let previousNode = this.get(e);
+        let previousNode = new DorisObject([this.get(e)]);
         replacement.each(function(n) {
           let s = m ? this.cloneNode(true) : this;
           newCollection.push(s)
           previousNode.after(s);
           previousNode = doris(s);
         })
-        this.get(e).remove();
+        new DorisObject([this.get(e)]).remove();
       }
     }
 

@@ -233,17 +233,16 @@ var DorisObject = (function () {
 
   /**
    *
-   * Returns a new instance of a DorisObject for the sole element (zero based
-   *     index)
+   * Returns the matched DOM element (zero based index)
    *
    * @param {number} index The index for which element should be returned.
-   * @return {DorisObject}
+   * @return {Node|undefined}
    */
 
   _createClass(DorisObject, [{
     key: 'get',
     value: function get(index) {
-      return new DorisObject([this.elements[index]]);
+      return this.elements[index];
     }
 
     /**
@@ -475,14 +474,14 @@ var DorisObject = (function () {
           newCollection.push(s);
         } else {
           (function () {
-            var previousNode = _this.get(e);
+            var previousNode = new DorisObject([_this.get(e)]);
             replacement.each(function (n) {
               var s = m ? this.cloneNode(true) : this;
               newCollection.push(s);
               previousNode.after(s);
               previousNode = doris(s);
             });
-            _this.get(e).remove();
+            new DorisObject([_this.get(e)]).remove();
           })();
         }
       }
@@ -803,7 +802,7 @@ var DorisObject = (function () {
             var eventData = EventList[id].events[event.type][i];
             if (eventData.selector === '*' && target._doris === id || eventData.selector !== '*' && this._matchSelector(target, eventData.selector)) {
 
-              eventData.callback(event);
+              eventData.callback.call(new DorisObject([event.target]), event);
               if (eventData.callback.one) {
                 this.off(event.type, selector, eventData.callback.one, id);
               }
