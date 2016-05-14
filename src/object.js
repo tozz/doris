@@ -50,16 +50,16 @@ export default class DorisObject {
 
   /**
    *
-   * For each element call callback where this is bound to the unwrapped
-   *     element.
+   * For each element call callback where this is a new DorisObject of the
+   *     matching element.
    *
-   * @param {function(node: DorisObject, index: number)} callback
+   * @param {function(node: Node, index: number)} callback
    * @return {DorisObject}
    */
   each(callback) {
     for (let i in this.elements) {
-      callback.apply(this.elements[i],
-                     [new DorisObject([this.elements[i]]), parseInt(i)]);
+      callback.apply(new DorisObject([this.elements[i]]),
+                     [this.elements[i], parseInt(i)]);
     }
     return this;
   }
@@ -258,7 +258,7 @@ export default class DorisObject {
       } else {
         let previousNode = new DorisObject([this.get(e)]);
         replacement.each(function(n) {
-          let s = m ? this.cloneNode(true) : this;
+          let s = m ? n.cloneNode(true) : n;
           newCollection.push(s)
           previousNode.after(s);
           previousNode = doris(s);
@@ -536,8 +536,7 @@ export default class DorisObject {
    *
    * @param {string} event Name of event.
    * @param {string} [selector] Optional CSS selector for event delegation.
-   * @param {function(event: event)} callback Callback for given event, passed
-   *     event as an argument.
+   * @param {function(event: DorisEvent)} callback Callback for given event.
    * @return {this}
    */
   on(event, selector, callback) {

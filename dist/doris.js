@@ -247,17 +247,17 @@ var DorisObject = (function () {
 
     /**
      *
-     * For each element call callback where this is bound to the unwrapped
-     *     element.
+     * For each element call callback where this is a new DorisObject of the
+     *     matching element.
      *
-     * @param {function(node: DorisObject, index: number)} callback
+     * @param {function(node: Node, index: number)} callback
      * @return {DorisObject}
      */
   }, {
     key: 'each',
     value: function each(callback) {
       for (var i in this.elements) {
-        callback.apply(this.elements[i], [new DorisObject([this.elements[i]]), parseInt(i)]);
+        callback.apply(new DorisObject([this.elements[i]]), [this.elements[i], parseInt(i)]);
       }
       return this;
     }
@@ -476,7 +476,7 @@ var DorisObject = (function () {
           (function () {
             var previousNode = new DorisObject([_this.get(e)]);
             replacement.each(function (n) {
-              var s = m ? this.cloneNode(true) : this;
+              var s = m ? n.cloneNode(true) : n;
               newCollection.push(s);
               previousNode.after(s);
               previousNode = doris(s);
