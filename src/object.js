@@ -488,7 +488,7 @@ export default class DorisObject {
         left = 0,
         top = 0;
 
-    while (e.tagName !== 'BODY') {
+    while (e !== null && e.tagName !== 'BODY') {
       left += e.offsetLeft;
       top += e.offsetTop;
       e = e.offsetParent;
