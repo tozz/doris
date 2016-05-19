@@ -363,6 +363,18 @@ export default class DorisObject {
 
   /**
    *
+   * Checks if class is set on the first element. This is using the native
+   *     classList implementation.
+   *
+   * @param {string} klass Name of class
+   * @return {this}
+   */
+  hasClass(klass) {
+    return this.elements[0].classList.contains(klass);
+  }
+
+  /**
+   *
    * Toggles class of every element. This is using the native classList
    *     implementation.
    *
