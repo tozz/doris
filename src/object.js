@@ -420,12 +420,12 @@ export default class DorisObject {
    *
    * @param {string} attribute
    */
-   removeAttribute(attribute) {
-     for (let i in this.elements) {
-       this.elements[i].removeAttribute(name);
-     }
-     return this;
-   }
+  removeAttribute(attribute) {
+    for (let i in this.elements) {
+      this.elements[i].removeAttribute(attribute);
+    }
+    return this;
+  }
 
   /**
    *
@@ -622,8 +622,8 @@ export default class DorisObject {
   once(event, selector, callback) {
     var [event, selector, callback] = this._parseEventArguments(arguments);
 
-    let wrappedCallback = (e) => {
-      callback(e);
+    let wrappedCallback = function(e) {
+      callback.call(this, e);
     };
     wrappedCallback.one = callback;
 
