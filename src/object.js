@@ -578,7 +578,7 @@ export default class DorisObject {
           }
         }
 
-        if (target._doris === id || target.parentNode === document) { break; }
+        if (target._doris === id || target.parentNode === null) { break; }
         target = target.parentNode;
       }
     };
@@ -729,6 +729,9 @@ export default class DorisObject {
    * @return {bool}
    */
   _matchSelector(element, selector) {
+    if (element === document) {
+      return false;
+    }
     let f = Element.prototype.matches || Element.prototype.msMatchesSelector;
     if (!f) {
       return false;
