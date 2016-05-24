@@ -555,7 +555,9 @@ export default class DorisObject {
   on(event, selector, callback, options) {
     var [event, selector, callback, options] = this._parseEventArguments(arguments);
     options = options === undefined ? false : options;
-    options['capture'] = false;
+    if (typeof(options) === 'object' && options['capture'] === undefined) {
+      options['capture'] = false;
+    }
 
     let caller = function(id, e) {
       let event = new DorisEvent(e);
@@ -627,7 +629,9 @@ export default class DorisObject {
     var [event, selector, callback, options] =
           this._parseEventArguments(arguments);
     options = options === undefined ? {} : options;
-    options['capture'] = false;
+    if (typeof(options) === 'object' && options['capture'] === undefined) {
+      options['capture'] = false;
+    }
 
     let wrappedCallback = function(e) {
       callback.call(this, e);
