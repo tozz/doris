@@ -9,9 +9,23 @@ describe('Events', function() {
     expect(x).to.equal(1);
   });
 
+  it('Should bind click events on elements with an options object', function() {
+    var x = 0;
+    doris('#test-3').on('click', function() { x += 1; }, { passive: true });
+    doris('#test-3').trigger('click');
+    expect(x).to.equal(1);
+  });
+
   it('Should bind click events using selectors (delegation)', function() {
     var x = 0;
     doris('#test-1').on('click', '#test-3', function() { x += 1; });
+    doris('#test-3').trigger('click');
+    expect(x).to.equal(1);
+  });
+
+  it('Should bind click events using selectors (delegation) with an options object', function() {
+    var x = 0;
+    doris('#test-1').on('click', '#test-3', function() { x += 1; }, { passive: true });
     doris('#test-3').trigger('click');
     expect(x).to.equal(1);
   });
@@ -20,6 +34,7 @@ describe('Events', function() {
     var x = 0;
     doris('#test-1').once('click', '#test-3', function() { x += 1; });
     doris('#test-3').trigger('click').trigger('click');
+    doris('#test-3').trigger('click');
     expect(x).to.equal(1);
   });
 

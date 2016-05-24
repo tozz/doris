@@ -549,10 +549,13 @@ export default class DorisObject {
    * @param {string} event Name of event.
    * @param {string} [selector] Optional CSS selector for event delegation.
    * @param {function(event: DorisEvent)} callback Callback for given event.
+   * @param {object} [options] Option object for addEventListener
    * @return {this}
    */
-  on(event, selector, callback) {
-    var [event, selector, callback] = this._parseEventArguments(arguments);
+  on(event, selector, callback, options) {
+    var [event, selector, callback, options] = this._parseEventArguments(arguments);
+    options = options === undefined ? false : options;
+    options['capture'] = false;
 
     let caller = function(id, e) {
       let event = new DorisEvent(e);
@@ -603,7 +606,7 @@ export default class DorisObject {
       });
       EventList[id].counts[event] += 1;
 
-      this.elements[i].addEventListener(event, EventList[id].call, false);
+      this.elements[i].addEventListener(event, EventList[id].call, options);
     }
 
     return this;
@@ -617,10 +620,14 @@ export default class DorisObject {
    * @param {string} [selector] Optional CSS selector for event delegation.
    * @param {function} callback Callback for given event, passed event as an
    *     argument.
+   * @param {object} [options] Option object for addEventListener
    * @return {this}
    */
-  once(event, selector, callback) {
-    var [event, selector, callback] = this._parseEventArguments(arguments);
+  once(event, selector, callback, options) {
+    var [event, selector, callback, options] =
+          this._parseEventArguments(arguments);
+    options = options === undefined ? {} : options;
+    options['capture'] = false;
 
     let wrappedCallback = function(e) {
       callback.call(this, e);
@@ -643,7 +650,7 @@ export default class DorisObject {
    * @return {this}
    */
   off(event, selector, callback, node) {
-    var [event, selector, callback, node] =
+    var [event, selector, callback, _, node] =
           this._parseEventArguments(arguments);
 
     for (let i in this.elements) {
@@ -748,16 +755,27 @@ export default class DorisObject {
     var event = args[0],
         selector = '*',
         callback = undefined,
+        options = undefined,
         node = undefined;
 
     if (typeof args[1] === 'function') {
       callback = args[1];
+      if (args[2] !== null && typeof(args[2]) === 'object') {
+        options = args[2];
+      }
     } else if (args[3] || typeof args[2] === 'function') {
       selector = args[1];
       callback = args[2];
-      node = args[3];
+      if (args[3] !== null && typeof(args[3]) === 'object') {
+        options = args[3];
+        if (args[4] !== undefined) {
+          node = args[4];
+        }
+      } else if (typeof(args[3]) === 'number') {
+        node = args[3];
+      }
     }
 
-    return [event, selector, callback, node];
+    return [event, selector, callback, options, node];
   }
 };

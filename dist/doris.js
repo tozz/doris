@@ -602,6 +602,20 @@ var DorisObject = (function () {
 
     /**
      *
+     * Checks if class is set on the first element. This is using the native
+     *     classList implementation.
+     *
+     * @param {string} klass Name of class
+     * @return {this}
+     */
+  }, {
+    key: 'hasClass',
+    value: function hasClass(klass) {
+      return this.elements[0].classList.contains(klass);
+    }
+
+    /**
+     *
      * Toggles class of every element. This is using the native classList
      *     implementation.
      *
@@ -655,7 +669,7 @@ var DorisObject = (function () {
     key: 'removeAttribute',
     value: function removeAttribute(attribute) {
       for (var i in this.elements) {
-        this.elements[i].removeAttribute(name);
+        this.elements[i].removeAttribute(attribute);
       }
       return this;
     }
@@ -747,7 +761,7 @@ var DorisObject = (function () {
           left = 0,
           top = 0;
 
-      while (e.tagName !== 'BODY') {
+      while (e !== null && e.tagName !== 'BODY') {
         left += e.offsetLeft;
         top += e.offsetTop;
         e = e.offsetParent;
@@ -797,20 +811,23 @@ var DorisObject = (function () {
      *
      * @param {string} event Name of event.
      * @param {string} [selector] Optional CSS selector for event delegation.
-     * @param {function(event: event)} callback Callback for given event, passed
-     *     event as an argument.
+     * @param {function(event: DorisEvent)} callback Callback for given event.
+     * @param {object} [options] Option object for addEventListener
      * @return {this}
      */
   }, {
     key: 'on',
-    value: function on(event, selector, callback) {
+    value: function on(event, selector, callback, options) {
       var _parseEventArguments2 = this._parseEventArguments(arguments);
 
-      var _parseEventArguments22 = _slicedToArray(_parseEventArguments2, 3);
+      var _parseEventArguments22 = _slicedToArray(_parseEventArguments2, 4);
 
       var event = _parseEventArguments22[0];
       var selector = _parseEventArguments22[1];
       var callback = _parseEventArguments22[2];
+      var options = _parseEventArguments22[3];
+
+      options = options === undefined ? false : options;
 
       var caller = function caller(id, e) {
         var event = new _event2['default'](e);
@@ -840,7 +857,7 @@ var DorisObject = (function () {
             }
           }
 
-          if (target._doris === id || target.parentNode === document) {
+          if (target._doris === id || target.parentNode === null) {
             break;
           }
           target = target.parentNode;
@@ -867,7 +884,7 @@ var DorisObject = (function () {
         });
         EventList[id].counts[event] += 1;
 
-        this.elements[i].addEventListener(event, EventList[id].call, false);
+        this.elements[i].addEventListener(event, EventList[id].call, options);
       }
 
       return this;
@@ -881,21 +898,25 @@ var DorisObject = (function () {
      * @param {string} [selector] Optional CSS selector for event delegation.
      * @param {function} callback Callback for given event, passed event as an
      *     argument.
+     * @param {object} [options] Option object for addEventListener
      * @return {this}
      */
   }, {
     key: 'once',
-    value: function once(event, selector, callback) {
+    value: function once(event, selector, callback, options) {
       var _parseEventArguments3 = this._parseEventArguments(arguments);
 
-      var _parseEventArguments32 = _slicedToArray(_parseEventArguments3, 3);
+      var _parseEventArguments32 = _slicedToArray(_parseEventArguments3, 4);
 
       var event = _parseEventArguments32[0];
       var selector = _parseEventArguments32[1];
       var callback = _parseEventArguments32[2];
+      var options = _parseEventArguments32[3];
+
+      options = options === undefined ? {} : options;
 
       var wrappedCallback = function wrappedCallback(e) {
-        callback(e);
+        callback.call(this, e);
       };
       wrappedCallback.one = callback;
 
@@ -919,12 +940,13 @@ var DorisObject = (function () {
     value: function off(event, selector, callback, node) {
       var _parseEventArguments4 = this._parseEventArguments(arguments);
 
-      var _parseEventArguments42 = _slicedToArray(_parseEventArguments4, 4);
+      var _parseEventArguments42 = _slicedToArray(_parseEventArguments4, 5);
 
       var event = _parseEventArguments42[0];
       var selector = _parseEventArguments42[1];
       var callback = _parseEventArguments42[2];
-      var node = _parseEventArguments42[3];
+      var _ = _parseEventArguments42[3];
+      var node = _parseEventArguments42[4];
 
       for (var i in this.elements) {
         var id = this.elements[i]._doris;
@@ -1011,6 +1033,9 @@ var DorisObject = (function () {
   }, {
     key: '_matchSelector',
     value: function _matchSelector(element, selector) {
+      if (element === document) {
+        return false;
+      }
       var f = Element.prototype.matches || Element.prototype.msMatchesSelector;
       if (!f) {
         return false;
@@ -1029,17 +1054,28 @@ var DorisObject = (function () {
       var event = args[0],
           selector = '*',
           callback = undefined,
+          options = undefined,
           node = undefined;
 
       if (typeof args[1] === 'function') {
         callback = args[1];
+        if (args[2] !== null && typeof args[2] === 'object') {
+          options = args[2];
+        }
       } else if (args[3] || typeof args[2] === 'function') {
         selector = args[1];
         callback = args[2];
-        node = args[3];
+        if (args[3] !== null && typeof args[3] === 'object') {
+          options = args[3];
+          if (args[4] !== undefined) {
+            node = args[4];
+          }
+        } else if (typeof args[3] === 'number') {
+          node = args[3];
+        }
       }
 
-      return [event, selector, callback, node];
+      return [event, selector, callback, options, node];
     }
   }]);
 
