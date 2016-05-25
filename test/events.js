@@ -41,6 +41,8 @@ describe('Events', function() {
   it('Should not fire when calling off()', function() {
     var x = 0;
     var f = function() { x += 1; };
+    var f1 = function() { x += 5; };
+    var f2 = function() { x += 2; };
     doris('#test-1').on('click', '#test-3', f);
     doris('#test-1').off('click', '#test-3', f);
     doris('#test-2').on('click', f);
@@ -49,6 +51,14 @@ describe('Events', function() {
     doris('#test-2').trigger('click');
     doris('#test-3').trigger('click');
     expect(x).to.equal(0);
+    doris('#test-1').on('click', f2);
+    doris('#test-1').on('click', f2);
+    doris('#test-1').trigger('click');
+    expect(x).to.equal(4);
+    doris('#test-1').off('click', f2);
+    doris('#test-1').on('click', f1);
+    doris('#test-1').trigger('click');
+    expect(x).to.equal(9);
   });
 
   it('Should not trigger default events when calling preventDefault()', function() {

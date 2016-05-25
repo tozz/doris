@@ -689,7 +689,7 @@ var DorisObject = (function () {
     value: function css(style, value) {
       var _this2 = this;
 
-      if (value || typeof style === 'object') {
+      if (value !== undefined && value !== null || typeof style === 'object') {
         var _loop = function (i) {
           if (typeof style === 'string') {
             _this2.elements[i].style[style] = value;
@@ -828,6 +828,9 @@ var DorisObject = (function () {
       var options = _parseEventArguments22[3];
 
       options = options === undefined ? false : options;
+      if (typeof options === 'object' && options['capture'] === undefined) {
+        options['capture'] = false;
+      }
 
       var caller = function caller(id, e) {
         var event = new _event2['default'](e);
@@ -850,7 +853,7 @@ var DorisObject = (function () {
             var eventData = EventList[id].events[event.type][i];
             if (eventData.selector === '*' && target._doris === id || eventData.selector !== '*' && this._matchSelector(target, eventData.selector)) {
 
-              eventData.callback.call(new DorisObject([event.target]), event);
+              eventData.callback.call(new DorisObject([target]), event);
               if (eventData.callback.one) {
                 this.off(event.type, selector, eventData.callback.one, id);
               }
@@ -914,6 +917,9 @@ var DorisObject = (function () {
       var options = _parseEventArguments32[3];
 
       options = options === undefined ? {} : options;
+      if (typeof options === 'object' && options['capture'] === undefined) {
+        options['capture'] = false;
+      }
 
       var wrappedCallback = function wrappedCallback(e) {
         callback.call(this, e);
