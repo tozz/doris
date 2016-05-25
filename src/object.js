@@ -438,7 +438,7 @@ export default class DorisObject {
    * @return {self|string}
    */
   css(style, value) {
-    if (value || typeof style === 'object') {
+    if ((value !== undefined && value !== null) || typeof style === 'object') {
       for (let i in this.elements) {
         if (typeof style === 'string') {
           this.elements[i].style[style] = value;
@@ -576,7 +576,7 @@ export default class DorisObject {
               eventData.selector !== '*' &&
               this._matchSelector(target, eventData.selector)) {
 
-            eventData.callback.call(new DorisObject([event.target]), event);
+            eventData.callback.call(new DorisObject([target]), event);
             if (eventData.callback.one) {
               this.off(event.type, selector, eventData.callback.one, id);
             }
