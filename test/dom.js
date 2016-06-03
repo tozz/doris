@@ -85,6 +85,12 @@ describe('DOM Manipulation', function() {
     expect(doris('#test-5 p').attribute('id')).to.equal('appended-dom-1');
   });
 
+  it('Should append a node using a Doris representation', function() {
+    var a = doris('<div id="doris-appended"></div>');
+    doris('#test-5').append(a);
+    expect(doris('#test-5 div:last-child').attribute('id')).to.equal('doris-appended');
+  });
+
   it('Should prepend a node using a string representation', function() {
     doris('#test-5').prepend('<div class="dom-added" id="prepended-1"></div>');
     expect(doris('#test-5').find('.dom-added').get(0).id).to.equal('prepended-1');

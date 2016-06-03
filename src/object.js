@@ -29,6 +29,7 @@ export default class DorisObject {
   constructor(nodes) {
     /** @private */
     this.elements = Array.from(nodes);
+    this.doris = true;
     for (let i in this.elements) {
       if (this.elements[i]._doris === undefined) {
         this.elements[i]._doris = ++elementCount;
@@ -165,7 +166,16 @@ export default class DorisObject {
    */
   append(dom) {
     for (let i in this.elements) {
-      const nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
+      let nodes;
+      if (typeof dom === 'string') {
+        nodes = utils.stringToDOM(dom)
+      } else if (dom.doris === true) {
+        nodes = dom.elements;
+      } else {
+        // Assume this is a created node
+        nodes = [dom]
+      }
+
       for (let n in nodes) {
         this.elements[i].appendChild(nodes[n])
       }
