@@ -36,6 +36,7 @@ export default class DorisObject {
       }
       this[i] = this.elements[i];
     }
+    this.length = this.elements.length
   }
 
   /**
@@ -492,6 +493,16 @@ export default class DorisObject {
     }
     let d = this.elements[0].getBoundingClientRect();
     return d.height;
+  }
+
+  /**
+   *
+   * Size of the first element via getBoundingClientRect().
+   *
+   * @return {number}
+   */
+  size() {
+    return this.elements[0].getBoundingClientRect();
   }
 
   /**
