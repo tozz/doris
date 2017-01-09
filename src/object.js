@@ -238,6 +238,7 @@ export default class DorisObject {
       delete this.elements[i];
       delete this[i];
     }
+    this.length = this.elements.length
     return this;
   }
 
