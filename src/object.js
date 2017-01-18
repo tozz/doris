@@ -600,7 +600,7 @@ export default class DorisObject {
 
             eventData.callback.call(new DorisObject([target]), event);
             if (eventData.callback.one) {
-              this.off(event.type, selector, eventData.callback.one, id);
+              this.off(event.type, eventData.callback.selector, eventData.callback.one, id);
             }
           }
         }
@@ -659,6 +659,7 @@ export default class DorisObject {
       callback.call(this, e);
     };
     wrappedCallback.one = callback;
+    wrappedCallback.selector = selector;
 
     this.on(event, selector, wrappedCallback);
 

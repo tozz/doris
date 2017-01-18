@@ -32,10 +32,16 @@ describe('Events', function() {
 
   it('Should only fire once using once()', function() {
     var x = 0;
+    var y = 0;
     doris('#test-1').once('click', '#test-3', function() { x += 1; });
     doris('#test-3').trigger('click').trigger('click');
     doris('#test-3').trigger('click');
     expect(x).to.equal(1);
+    var f = function() { y += 1; };
+    doris(document).once('click', f);
+    doris(document).trigger('click');
+    doris(document).trigger('click');
+    expect(y).to.equal(1);
   });
 
   it('Should not fire when calling off()', function() {

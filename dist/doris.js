@@ -230,6 +230,7 @@ var DorisObject = (function () {
       }
       this[i] = this.elements[i];
     }
+    this.length = this.elements.length;
   }
 
   /**
@@ -450,6 +451,7 @@ var DorisObject = (function () {
         delete this.elements[i];
         delete this[i];
       }
+      this.length = this.elements.length;
       return this;
     }
 
@@ -755,6 +757,18 @@ var DorisObject = (function () {
 
     /**
      *
+     * Size of the first element via getBoundingClientRect().
+     *
+     * @return {number}
+     */
+  }, {
+    key: 'size',
+    value: function size() {
+      return this.elements[0].getBoundingClientRect();
+    }
+
+    /**
+     *
      * Returns the offset (from top left) of the first element.
      *
      * @property {number} top
@@ -865,7 +879,7 @@ var DorisObject = (function () {
 
               eventData.callback.call(new DorisObject([target]), event);
               if (eventData.callback.one) {
-                this.off(event.type, selector, eventData.callback.one, id);
+                this.off(event.type, eventData.callback.selector, eventData.callback.one, id);
               }
             }
           }
@@ -935,6 +949,7 @@ var DorisObject = (function () {
         callback.call(this, e);
       };
       wrappedCallback.one = callback;
+      wrappedCallback.selector = selector;
 
       this.on(event, selector, wrappedCallback);
 
