@@ -985,12 +985,8 @@ var DorisObject = (function () {
           continue;
         }
 
-        var boundEvents = 0;
-
         if (EventList[id].events[event]) {
-          for (var c in EventList[id].counts) {
-            boundEvents += EventList[id].counts[c];
-          }
+          var boundEvents = EventList[id].counts[event];
 
           for (var e in EventList[id].events[event]) {
             var evt = EventList[id].events[event][e];

@@ -684,12 +684,8 @@ export default class DorisObject {
       let id = this.elements[i]._doris;
       if (node !== undefined && id !== node) { continue }
 
-      let boundEvents = 0;
-
       if (EventList[id].events[event]) {
-        for (let c in EventList[id].counts) {
-          boundEvents += EventList[id].counts[c];
-        }
+        let boundEvents = EventList[id].counts[event];
 
         for (let e in EventList[id].events[event]) {
           let evt = EventList[id].events[event][e];
