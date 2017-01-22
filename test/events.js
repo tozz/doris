@@ -44,6 +44,16 @@ describe('Events', function() {
     expect(y).to.equal(1);
   });
 
+  it('Should only remove one event listeners matching the selector when no callback is given', function() {
+    var x = 0;
+    doris(document).on('click', '#test-1', function() { x += 1; });
+    doris(document).on('click', '#test-2', function(e) { x += 1; });
+    doris(document).on('click', '#test-3', function() { x += 1; });
+    doris(document).off('click', '#test-3');
+    doris('#test-3').trigger('click');
+    expect(x).to.equal(2);
+  });
+
   it('Should not fire when calling off()', function() {
     var x = 0;
     var f = function() { x += 1; };

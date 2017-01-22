@@ -991,7 +991,7 @@ var DorisObject = (function () {
           for (var e in EventList[id].events[event]) {
             var evt = EventList[id].events[event][e];
 
-            if (!callback || evt.selector === selector && callback && (evt.callback.one && evt.callback.one === callback || callback === evt.callback)) {
+            if (evt.selector === selector && (!callback || callback && (evt.callback.one && evt.callback.one === callback || callback === evt.callback))) {
 
               delete EventList[id].events[event][e];
               --boundEvents;
@@ -1089,6 +1089,8 @@ var DorisObject = (function () {
         if (args[2] !== null && typeof args[2] === 'object') {
           options = args[2];
         }
+      } else if (typeof args[1] === 'string' && !args[2]) {
+        selector = args[1];
       } else if (args[3] || typeof args[2] === 'function') {
         selector = args[1];
         callback = args[2];

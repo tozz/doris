@@ -690,9 +690,8 @@ export default class DorisObject {
         for (let e in EventList[id].events[event]) {
           let evt = EventList[id].events[event][e];
 
-          if (!callback ||
-            (evt.selector === selector &&
-             (callback &&((evt.callback.one &&
+          if (evt.selector === selector &&
+            (!callback || (callback &&((evt.callback.one &&
                            evt.callback.one === callback) ||
             (callback === evt.callback))))) {
 
@@ -786,6 +785,8 @@ export default class DorisObject {
       if (args[2] !== null && typeof(args[2]) === 'object') {
         options = args[2];
       }
+    } else if (typeof args[1] === 'string' && !args[2]) {
+      selector = args[1];
     } else if (args[3] || typeof args[2] === 'function') {
       selector = args[1];
       callback = args[2];
