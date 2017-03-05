@@ -24,7 +24,7 @@ export default class DorisObject {
    * @example
    * let p = doris('p') // A DorisObject with every <p>-tag in the DOM.
    *
-   * @param {array} nodes A list of DOM-nodes to work with.
+   * @param {Array} nodes A list of DOM-nodes to work with.
    */
   constructor(nodes) {
     /** @private */
@@ -44,7 +44,7 @@ export default class DorisObject {
    * Returns the matched DOM element (zero based index)
    *
    * @param {number} index The index for which element should be returned.
-   * @return {Node|undefined}
+   * @return {(Node|undefined)}
    */
   get(index) {
     return this.elements[index];
@@ -139,9 +139,9 @@ export default class DorisObject {
    *
    * Prepends nodes in the DOM.
    *
-   * @param {Node|string} dom A Node or string representation of the DOM nodes to
+   * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
    *     insert. If a Node is used, only a single top level element can be specified!
-   * @return {this}
+   * @return {DorisObject}
    */
   prepend(dom) {
     for (let i in this.elements) {
@@ -161,9 +161,9 @@ export default class DorisObject {
    *
    * Appends nodes in the DOM.
    *
-   * @param {Node|string} dom A Node or string representation of the DOM nodes to
+   * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
    *     insert. If a Node is used, only a single top level element can be specified!
-   * @return {this}
+   * @return {DorisObject}
    */
   append(dom) {
     for (let i in this.elements) {
@@ -188,9 +188,9 @@ export default class DorisObject {
    *
    * Insert DOM element(s) before the elements.
    *
-   * @param {Node|string} dom A Node or string representation of the DOM nodes to
+   * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
    *     insert. If a Node is used, only a single top level element can be specified!
-   * @return {this}
+   * @return {DorisObject}
    */
   before(dom) {
     for (let i in this.elements) {
@@ -206,9 +206,9 @@ export default class DorisObject {
    *
    * Insert DOM element(s) after the elements.
    *
-   * @param {Node|string} dom A Node or string representation of the DOM nodes to
+   * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
    *     insert. If a Node is used, only a single top level element can be specified!
-   * @return {this}
+   * @return {DorisObject}
    */
   after(dom) {
     for (let i in this.elements) {
@@ -230,7 +230,7 @@ export default class DorisObject {
    *
    * Removes every element in elements from the DOM and removes the references.
    *
-   * @return {this}
+   * @return {DorisObject}
    */
   remove() {
     for (let i in this.elements) {
@@ -249,7 +249,7 @@ export default class DorisObject {
    * aren't updated, after replacing content you probably want to create a new
    * doris object that matches on the new content.
    *
-   * @param {string|DorisObject} replacement A string representation of the DOM you want to
+   * @param {(string|DorisObject)} replacement A string representation of the DOM you want to
    * use as the replacement or a Doris instance.
    * @return {DorisObject} A new instance with the replacement elements.
    */
@@ -274,7 +274,7 @@ export default class DorisObject {
           newCollection.push(s)
           previousNode.after(s);
           previousNode = doris(s);
-        })
+        });
         new DorisObject([this.get(e)]).remove();
       }
     }
@@ -287,9 +287,9 @@ export default class DorisObject {
    * Returns the HTML content of the first element or sets the innerHTML
    * of every matched element.
    *
-   * @param {string|Node} [html] A string representation of the DOM to use as replacement
+   * @param {(string|Node)} [html] A string representation of the DOM to use as replacement
    * or a Node representation that will to converted to markup.
-   * @return {string|this}
+   * @return {(string|DorisObject)}
    */
   html(html) {
     if (html === undefined) {
@@ -312,8 +312,8 @@ export default class DorisObject {
    * Returns the textContent of the matching elements or sets the textContent
    * of the first matching element.
    *
-   * @param {string|Node} [text] Text to set in all matching elements.
-   * @return {string|this}
+   * @param {(string|Node)} [text] Text to set in all matching elements.
+   * @return {(string|DorisObject)}
    */
   text(text) {
     if (text === undefined) {
@@ -337,7 +337,7 @@ export default class DorisObject {
    *     implementation.
    *
    * @param {...string} classes Names of class(es)
-   * @return {this}
+   * @return {DorisObject}
    */
   addClass(...classes) {
     for (let i in this.elements) {
@@ -358,7 +358,7 @@ export default class DorisObject {
    *     classList implementation.
    *
    * @param {...string} classes Names of class(es)
-   * @return {this}
+   * @return {DorisObject}
    */
   removeClass(...classes) {
     for (let i in this.elements) {
@@ -379,7 +379,7 @@ export default class DorisObject {
    *     classList implementation.
    *
    * @param {string} klass Name of class
-   * @return {this}
+   * @return {DorisObject}
    */
   hasClass(klass) {
     return this.elements[0].classList.contains(klass);
@@ -391,7 +391,7 @@ export default class DorisObject {
    *     implementation.
    *
    * @param {string} classname Name of class
-   * @return {this}
+   * @return {DorisObject}
    */
   toggleClass(classname) {
     for (let i in this.elements) {
@@ -405,9 +405,9 @@ export default class DorisObject {
    * Sets attribute to all elements and reads from the first.
    *
    * @param {string} name
-   * @param {string|bool} [value] Value to set, if false the attribute will
+   * @param {(string|boolean)} [value] Value to set, if false the attribute will
    *     be deleted, if not specified the key will be read.
-   * @return {self|string} Returns self if value is given, returns the value
+   * @return {(DorisObject|string)} Returns self if value is given, returns the value
    *     of the first element if value isn't given.
    */
   attribute(name, value) {
@@ -444,10 +444,10 @@ export default class DorisObject {
    * Set CSS styles, returns the CSS property value of the first element if
    *     no value is specified.
    *
-   * @param {string|Object.<string, string>} style CSS property or a key value
+   * @param {(string|Object.<string, string>)} style CSS property or a key value
    *    object containing multiple style names and their values.
    * @param {string} [value]
-   * @return {self|string}
+   * @return {(DorisObject|string)}
    */
   css(style, value) {
     if ((value !== undefined && value !== null) || typeof style === 'object') {
@@ -500,7 +500,7 @@ export default class DorisObject {
    *
    * Size of the first element via getBoundingClientRect().
    *
-   * @return {number}
+   * @return {Object.<string, number>}
    */
   size() {
     return this.elements[0].getBoundingClientRect();
@@ -538,7 +538,7 @@ export default class DorisObject {
    *     coverted to standards).
    * @param {string} [value] Value to set, if not specified the key will be
    *     read.
-   * @return {self|string} Returns self if value is given, returns the value
+   * @return {(DorisObject|string)} Returns self if value is given, returns the value
    *     of the first element if value isn't given.
    */
   data(key, value) {
@@ -572,7 +572,7 @@ export default class DorisObject {
    * @param {string} [selector] Optional CSS selector for event delegation.
    * @param {function(event: DorisEvent)} callback Callback for given event.
    * @param {object} [options] Option object for addEventListener
-   * @return {this}
+   * @return {DorisObject}
    */
   on(event, selector, callback, options) {
     var [event, selector, callback, options] = this._parseEventArguments(arguments);
@@ -645,7 +645,7 @@ export default class DorisObject {
    * @param {function} callback Callback for given event, passed event as an
    *     argument.
    * @param {object} [options] Option object for addEventListener
-   * @return {this}
+   * @return {DorisObject}
    */
   once(event, selector, callback, options) {
     var [event, selector, callback, options] =
@@ -674,7 +674,7 @@ export default class DorisObject {
    * @param {function} [callback] Callback to unbind, if this isn't specified
    *     everything will be unbound.
    * @param {number} node Internal use only.
-   * @return {this}
+   * @return {DorisObject}
    */
   off(event, selector, callback, node) {
     var [event, selector, callback, _, node] =
@@ -716,8 +716,8 @@ export default class DorisObject {
    *
    * Fires an event
    *
-   * @param {Event} event
-   * @return {this}
+   * @param {(string|Event)} event
+   * @return {DorisObject}
    */
   trigger(event) {
     let e;
@@ -755,7 +755,6 @@ export default class DorisObject {
    *
    * Matches a selector on an element.
    * @private
-   * @return {bool}
    */
   _matchSelector(element, selector) {
     if (element === document) {

@@ -7,7 +7,7 @@ import * as utils from './utils';
  *
  * Instantiates a DorisObject based on the selector input.
  *
- * @param {string|Node|window|document|DorisObject} nodes A CSS selector, a
+ * @param {(string|Array|Node|NodeList|Window|document|DorisObject)} nodes A CSS selector, a
  *     DOM node, one of the root elements (window, document) or nother instance
  *     of a DorisObject (the nodes will be the same).
  * @return {DorisObject}

@@ -22,7 +22,7 @@ var utils = _interopRequireWildcard(_utils);
  *
  * Instantiates a DorisObject based on the selector input.
  *
- * @param {string|Node|window|document|DorisObject} nodes A CSS selector, a
+ * @param {(string|Array|Node|NodeList|Window|document|DorisObject)} nodes A CSS selector, a
  *     DOM node, one of the root elements (window, document) or nother instance
  *     of a DorisObject (the nodes will be the same).
  * @return {DorisObject}
@@ -215,7 +215,7 @@ var DorisObject = (function () {
    * @example
    * let p = doris('p') // A DorisObject with every <p>-tag in the DOM.
    *
-   * @param {array} nodes A list of DOM-nodes to work with.
+   * @param {Array} nodes A list of DOM-nodes to work with.
    */
 
   function DorisObject(nodes) {
@@ -238,7 +238,7 @@ var DorisObject = (function () {
    * Returns the matched DOM element (zero based index)
    *
    * @param {number} index The index for which element should be returned.
-   * @return {Node|undefined}
+   * @return {(Node|undefined)}
    */
 
   _createClass(DorisObject, [{
@@ -344,9 +344,9 @@ var DorisObject = (function () {
      *
      * Prepends nodes in the DOM.
      *
-     * @param {Node|string} dom A Node or string representation of the DOM nodes to
+     * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
      *     insert. If a Node is used, only a single top level element can be specified!
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'prepend',
@@ -368,9 +368,9 @@ var DorisObject = (function () {
      *
      * Appends nodes in the DOM.
      *
-     * @param {Node|string} dom A Node or string representation of the DOM nodes to
+     * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
      *     insert. If a Node is used, only a single top level element can be specified!
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'append',
@@ -397,9 +397,9 @@ var DorisObject = (function () {
      *
      * Insert DOM element(s) before the elements.
      *
-     * @param {Node|string} dom A Node or string representation of the DOM nodes to
+     * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
      *     insert. If a Node is used, only a single top level element can be specified!
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'before',
@@ -417,9 +417,9 @@ var DorisObject = (function () {
      *
      * Insert DOM element(s) after the elements.
      *
-     * @param {Node|string} dom A Node or string representation of the DOM nodes to
+     * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
      *     insert. If a Node is used, only a single top level element can be specified!
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'after',
@@ -441,7 +441,7 @@ var DorisObject = (function () {
      *
      * Removes every element in elements from the DOM and removes the references.
      *
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'remove',
@@ -462,7 +462,7 @@ var DorisObject = (function () {
      * aren't updated, after replacing content you probably want to create a new
      * doris object that matches on the new content.
      *
-     * @param {string|DorisObject} replacement A string representation of the DOM you want to
+     * @param {(string|DorisObject)} replacement A string representation of the DOM you want to
      * use as the replacement or a Doris instance.
      * @return {DorisObject} A new instance with the replacement elements.
      */
@@ -506,9 +506,9 @@ var DorisObject = (function () {
      * Returns the HTML content of the first element or sets the innerHTML
      * of every matched element.
      *
-     * @param {string|Node} [html] A string representation of the DOM to use as replacement
+     * @param {(string|Node)} [html] A string representation of the DOM to use as replacement
      * or a Node representation that will to converted to markup.
-     * @return {string|this}
+     * @return {(string|DorisObject)}
      */
   }, {
     key: 'html',
@@ -533,8 +533,8 @@ var DorisObject = (function () {
      * Returns the textContent of the matching elements or sets the textContent
      * of the first matching element.
      *
-     * @param {string|Node} [text] Text to set in all matching elements.
-     * @return {string|this}
+     * @param {(string|Node)} [text] Text to set in all matching elements.
+     * @return {(string|DorisObject)}
      */
   }, {
     key: 'text',
@@ -560,7 +560,7 @@ var DorisObject = (function () {
      *     implementation.
      *
      * @param {...string} classes Names of class(es)
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'addClass',
@@ -589,7 +589,7 @@ var DorisObject = (function () {
      *     classList implementation.
      *
      * @param {...string} classes Names of class(es)
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'removeClass',
@@ -618,7 +618,7 @@ var DorisObject = (function () {
      *     classList implementation.
      *
      * @param {string} klass Name of class
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'hasClass',
@@ -632,7 +632,7 @@ var DorisObject = (function () {
      *     implementation.
      *
      * @param {string} classname Name of class
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'toggleClass',
@@ -648,9 +648,9 @@ var DorisObject = (function () {
      * Sets attribute to all elements and reads from the first.
      *
      * @param {string} name
-     * @param {string|bool} [value] Value to set, if false the attribute will
+     * @param {(string|boolean)} [value] Value to set, if false the attribute will
      *     be deleted, if not specified the key will be read.
-     * @return {self|string} Returns self if value is given, returns the value
+     * @return {(DorisObject|string)} Returns self if value is given, returns the value
      *     of the first element if value isn't given.
      */
   }, {
@@ -691,10 +691,10 @@ var DorisObject = (function () {
      * Set CSS styles, returns the CSS property value of the first element if
      *     no value is specified.
      *
-     * @param {string|Object.<string, string>} style CSS property or a key value
+     * @param {(string|Object.<string, string>)} style CSS property or a key value
      *    object containing multiple style names and their values.
      * @param {string} [value]
-     * @return {self|string}
+     * @return {(DorisObject|string)}
      */
   }, {
     key: 'css',
@@ -759,7 +759,7 @@ var DorisObject = (function () {
      *
      * Size of the first element via getBoundingClientRect().
      *
-     * @return {number}
+     * @return {Object.<string, number>}
      */
   }, {
     key: 'size',
@@ -801,7 +801,7 @@ var DorisObject = (function () {
      *     coverted to standards).
      * @param {string} [value] Value to set, if not specified the key will be
      *     read.
-     * @return {self|string} Returns self if value is given, returns the value
+     * @return {(DorisObject|string)} Returns self if value is given, returns the value
      *     of the first element if value isn't given.
      */
   }, {
@@ -837,7 +837,7 @@ var DorisObject = (function () {
      * @param {string} [selector] Optional CSS selector for event delegation.
      * @param {function(event: DorisEvent)} callback Callback for given event.
      * @param {object} [options] Option object for addEventListener
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'on',
@@ -926,7 +926,7 @@ var DorisObject = (function () {
      * @param {function} callback Callback for given event, passed event as an
      *     argument.
      * @param {object} [options] Option object for addEventListener
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'once',
@@ -964,7 +964,7 @@ var DorisObject = (function () {
      * @param {function} [callback] Callback to unbind, if this isn't specified
      *     everything will be unbound.
      * @param {number} node Internal use only.
-     * @return {this}
+     * @return {DorisObject}
      */
   }, {
     key: 'off',
@@ -1013,8 +1013,8 @@ var DorisObject = (function () {
      *
      * Fires an event
      *
-     * @param {Event} event
-     * @return {this}
+     * @param {(string|Event)} event
+     * @return {DorisObject}
      */
   }, {
     key: 'trigger',
@@ -1055,7 +1055,6 @@ var DorisObject = (function () {
      *
      * Matches a selector on an element.
      * @private
-     * @return {bool}
      */
   }, {
     key: '_matchSelector',
