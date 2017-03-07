@@ -182,9 +182,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _event = require('./event');
+var _event2 = require('./event');
 
-var _event2 = _interopRequireDefault(_event);
+var _event3 = _interopRequireDefault(_event2);
 
 var _features = require('./features');
 
@@ -221,7 +221,6 @@ var DorisObject = (function () {
   function DorisObject(nodes) {
     _classCallCheck(this, DorisObject);
 
-    /** @private */
     this.elements = Array.from(nodes);
     this.doris = true;
     for (var i in this.elements) {
@@ -274,7 +273,7 @@ var DorisObject = (function () {
   }, {
     key: 'matches',
     value: function matches(selector) {
-      return this._matchSelector(this.elements[0], selector);
+      return DorisObject._matchSelector(this.elements[0], selector);
     }
 
     /**
@@ -297,7 +296,7 @@ var DorisObject = (function () {
           var t = this.elements[i].parentNode,
               match = false;
 
-          while (!(match = this._matchSelector(t, selector))) {
+          while (!(match = DorisObject._matchSelector(t, selector))) {
             if (t.tagName === 'HTML') {
               break;
             }
@@ -368,7 +367,7 @@ var DorisObject = (function () {
      *
      * Appends nodes in the DOM.
      *
-     * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
+     * @param {(DorisObject|Node|string)} dom A Node or string representation of the DOM nodes to
      *     insert. If a Node is used, only a single top level element can be specified!
      * @return {DorisObject}
      */
@@ -472,7 +471,7 @@ var DorisObject = (function () {
       var _this = this;
 
       if (typeof replacement === 'string') {
-        replacement = doris(replacement);
+        replacement = window.doris(replacement);
       }
 
       var newCollection = [];
@@ -491,7 +490,7 @@ var DorisObject = (function () {
               var s = m ? n.cloneNode(true) : n;
               newCollection.push(s);
               previousNode.after(s);
-              previousNode = doris(s);
+              previousNode = window.doris(s);
             });
             new DorisObject([_this.get(e)]).remove();
           })();
@@ -618,7 +617,7 @@ var DorisObject = (function () {
      *     classList implementation.
      *
      * @param {string} klass Name of class
-     * @return {DorisObject}
+     * @return {boolean}
      */
   }, {
     key: 'hasClass',
@@ -808,16 +807,12 @@ var DorisObject = (function () {
     key: 'data',
     value: function data(key, value) {
       key = key.replace('data-', '');
-      var dataKey = key.replace(/\-([a-z]{1})/g, function (match, p1) {
+      var dataKey = key.replace(/-([a-z])/g, function (match, p1) {
         if (p1) {
           return p1.toUpperCase();
         }
         return match;
       });
-      var attributeKey = key.replace(/[A-Z]/g, function (match) {
-        return '-' + match.toLowerCase();
-      });
-      attributeKey = 'data-' + attributeKey;
 
       if (value) {
         for (var i in this.elements) {
@@ -842,22 +837,22 @@ var DorisObject = (function () {
   }, {
     key: 'on',
     value: function on(event, selector, callback, options) {
-      var _parseEventArguments2 = this._parseEventArguments(arguments);
+      var _DorisObject$_parseEventArguments = DorisObject._parseEventArguments(arguments);
 
-      var _parseEventArguments22 = _slicedToArray(_parseEventArguments2, 4);
+      var _DorisObject$_parseEventArguments2 = _slicedToArray(_DorisObject$_parseEventArguments, 4);
 
-      var event = _parseEventArguments22[0];
-      var selector = _parseEventArguments22[1];
-      var callback = _parseEventArguments22[2];
-      var options = _parseEventArguments22[3];
+      var _event = _DorisObject$_parseEventArguments2[0];
+      var _selector = _DorisObject$_parseEventArguments2[1];
+      var _callback = _DorisObject$_parseEventArguments2[2];
+      var _options = _DorisObject$_parseEventArguments2[3];
 
-      options = options === undefined ? false : options;
-      if (typeof options === 'object' && options['capture'] === undefined) {
-        options['capture'] = false;
+      _options = _options === undefined ? false : _options;
+      if (typeof _options === 'object' && _options['capture'] === undefined) {
+        _options['capture'] = false;
       }
 
       var caller = function caller(id, e) {
-        var event = new _event2['default'](e);
+        var event = new _event3['default'](e);
         if (!EventList[id].events[event.type]) {
           return;
         }
@@ -875,7 +870,7 @@ var DorisObject = (function () {
             }
 
             var eventData = EventList[id].events[event.type][i];
-            if (eventData.selector === '*' && target._doris === id || eventData.selector !== '*' && this._matchSelector(target, eventData.selector)) {
+            if (eventData.selector === '*' && target._doris === id || eventData.selector !== '*' && DorisObject._matchSelector(target, eventData.selector)) {
 
               eventData.callback.call(new DorisObject([target]), event);
               if (eventData.callback.one) {
@@ -900,18 +895,18 @@ var DorisObject = (function () {
             counts: {}
           };
         }
-        if (!EventList[id].events[event]) {
-          EventList[id].events[event] = [];
-          EventList[id].counts[event] = 0;
+        if (!EventList[id].events[_event]) {
+          EventList[id].events[_event] = [];
+          EventList[id].counts[_event] = 0;
         }
 
-        EventList[id].events[event].push({
-          selector: selector,
-          callback: callback
+        EventList[id].events[_event].push({
+          selector: _selector,
+          callback: _callback
         });
-        EventList[id].counts[event] += 1;
+        EventList[id].counts[_event] += 1;
 
-        this.elements[i].addEventListener(event, EventList[id].call, options);
+        this.elements[i].addEventListener(_event, EventList[id].call, _options);
       }
 
       return this;
@@ -931,27 +926,27 @@ var DorisObject = (function () {
   }, {
     key: 'once',
     value: function once(event, selector, callback, options) {
-      var _parseEventArguments3 = this._parseEventArguments(arguments);
+      var _DorisObject$_parseEventArguments3 = DorisObject._parseEventArguments(arguments);
 
-      var _parseEventArguments32 = _slicedToArray(_parseEventArguments3, 4);
+      var _DorisObject$_parseEventArguments32 = _slicedToArray(_DorisObject$_parseEventArguments3, 4);
 
-      var event = _parseEventArguments32[0];
-      var selector = _parseEventArguments32[1];
-      var callback = _parseEventArguments32[2];
-      var options = _parseEventArguments32[3];
+      var _event = _DorisObject$_parseEventArguments32[0];
+      var _selector = _DorisObject$_parseEventArguments32[1];
+      var _callback = _DorisObject$_parseEventArguments32[2];
+      var _options = _DorisObject$_parseEventArguments32[3];
 
-      options = options === undefined ? {} : options;
-      if (typeof options === 'object' && options['capture'] === undefined) {
-        options['capture'] = false;
+      _options = _options === undefined ? {} : _options;
+      if (typeof _options === 'object' && _options['capture'] === undefined) {
+        _options['capture'] = false;
       }
 
       var wrappedCallback = function wrappedCallback(e) {
-        callback.call(this, e);
+        _callback.call(this, e);
       };
-      wrappedCallback.one = callback;
-      wrappedCallback.selector = selector;
+      wrappedCallback.one = _callback;
+      wrappedCallback.selector = _selector;
 
-      this.on(event, selector, wrappedCallback);
+      this.on(_event, _selector, wrappedCallback);
 
       return this;
     }
@@ -969,39 +964,39 @@ var DorisObject = (function () {
   }, {
     key: 'off',
     value: function off(event, selector, callback, node) {
-      var _parseEventArguments4 = this._parseEventArguments(arguments);
+      var _DorisObject$_parseEventArguments4 = DorisObject._parseEventArguments(arguments);
 
-      var _parseEventArguments42 = _slicedToArray(_parseEventArguments4, 5);
+      var _DorisObject$_parseEventArguments42 = _slicedToArray(_DorisObject$_parseEventArguments4, 5);
 
-      var event = _parseEventArguments42[0];
-      var selector = _parseEventArguments42[1];
-      var callback = _parseEventArguments42[2];
-      var _ = _parseEventArguments42[3];
-      var node = _parseEventArguments42[4];
+      var _event = _DorisObject$_parseEventArguments42[0];
+      var _selector = _DorisObject$_parseEventArguments42[1];
+      var _callback = _DorisObject$_parseEventArguments42[2];
+      var _ = _DorisObject$_parseEventArguments42[3];
+      var _node = _DorisObject$_parseEventArguments42[4];
 
       for (var i in this.elements) {
         var id = this.elements[i]._doris;
-        if (node !== undefined && id !== node) {
+        if (_node !== undefined && id !== _node) {
           continue;
         }
 
-        if (EventList[id].events[event]) {
-          var boundEvents = EventList[id].counts[event];
+        if (EventList[id].events[_event]) {
+          var boundEvents = EventList[id].counts[_event];
 
-          for (var e in EventList[id].events[event]) {
-            var evt = EventList[id].events[event][e];
+          for (var e in EventList[id].events[_event]) {
+            var evt = EventList[id].events[_event][e];
 
-            if (evt.selector === selector && (!callback || callback && (evt.callback.one && evt.callback.one === callback || callback === evt.callback))) {
+            if (evt.selector === _selector && (!_callback || _callback && (evt.callback.one && evt.callback.one === _callback || _callback === evt.callback))) {
 
-              delete EventList[id].events[event][e];
+              delete EventList[id].events[_event][e];
               --boundEvents;
             }
           }
 
           if (boundEvents === 0) {
-            this.elements[i].removeEventListener(event, EventList[id].call, false);
-            delete EventList[id].events[event];
-            delete EventList[id].counts[event];
+            this.elements[i].removeEventListener(_event, EventList[id].call, false);
+            delete EventList[id].events[_event];
+            delete EventList[id].counts[_event];
           }
         }
       }
@@ -1056,7 +1051,7 @@ var DorisObject = (function () {
      * Matches a selector on an element.
      * @private
      */
-  }, {
+  }], [{
     key: '_matchSelector',
     value: function _matchSelector(element, selector) {
       if (element === document) {
