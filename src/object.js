@@ -291,7 +291,7 @@ export default class DorisObject {
    * @return {(string|DorisObject)}
    */
   html(html) {
-    if (html === undefined) {
+    if (html === undefined || html === null) {
       return this.elements[0].innerHTML;
     }
 

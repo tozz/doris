@@ -512,7 +512,7 @@ var DorisObject = (function () {
   }, {
     key: 'html',
     value: function html(_html) {
-      if (_html === undefined) {
+      if (_html === undefined || _html === null) {
         return this.elements[0].innerHTML;
       }
 
