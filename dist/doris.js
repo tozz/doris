@@ -622,7 +622,10 @@ var DorisObject = (function () {
   }, {
     key: 'hasClass',
     value: function hasClass(klass) {
-      return this.elements[0].classList.contains(klass);
+      if (this.elements[0]) {
+        return this.elements[0].classList.contains(klass);
+      }
+      return false;
     }
 
     /**

@@ -381,7 +381,10 @@ export default class DorisObject {
    * @return {boolean}
    */
   hasClass(klass) {
-    return this.elements[0].classList.contains(klass);
+    if (this.elements[0]) {
+      return this.elements[0].classList.contains(klass);
+    }
+    return false;
   }
 
   /**
