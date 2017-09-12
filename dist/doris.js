@@ -1,14 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports['default'] = doris;
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+exports.default = doris;
 
 var _object = require('./object');
 
@@ -17,6 +16,10 @@ var _object2 = _interopRequireDefault(_object);
 var _utils = require('./utils');
 
 var utils = _interopRequireWildcard(_utils);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  *
@@ -27,12 +30,11 @@ var utils = _interopRequireWildcard(_utils);
  *     of a DorisObject (the nodes will be the same).
  * @return {DorisObject}
  */
-
 function doris(nodes) {
   if (nodes instanceof Node) {
     // Standard DOM node.
     nodes = [nodes];
-  } else if (typeof nodes === 'object' && nodes.elements) {
+  } else if ((typeof nodes === 'undefined' ? 'undefined' : _typeof(nodes)) === 'object' && nodes.elements) {
     // Another DorisObject being passed
     nodes = nodes.elements;
   } else if (nodes === document || nodes === document.documentElement) {
@@ -50,7 +52,7 @@ function doris(nodes) {
       }
     }
   }
-  return new _object2['default'](nodes);
+  return new _object2.default(nodes);
 }
 
 if (typeof window !== 'undefined') {
@@ -58,7 +60,6 @@ if (typeof window !== 'undefined') {
 } else {
   throw new Error('Doris is meant to be run in a browser!');
 }
-module.exports = exports['default'];
 
 },{"./object":4,"./utils":5}],2:[function(require,module,exports){
 'use strict';
@@ -71,15 +72,16 @@ module.exports = exports['default'];
  *
  * @type {DorisEvent}
  */
-Object.defineProperty(exports, '__esModule', {
+
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DorisEvent = (function () {
+var DorisEvent = function () {
   /**
    *
    * Wraps a normal event with the purpose of assisting the event delegation
@@ -87,7 +89,6 @@ var DorisEvent = (function () {
    *
    * @param {Event} event
    */
-
   function DorisEvent(event) {
     _classCallCheck(this, DorisEvent);
 
@@ -110,6 +111,7 @@ var DorisEvent = (function () {
    * Wrapper for preventDefault()
    */
 
+
   _createClass(DorisEvent, [{
     key: 'preventDefault',
     value: function preventDefault() {
@@ -121,6 +123,7 @@ var DorisEvent = (function () {
      *
      * Wrapper for stopPropagation()
      */
+
   }, {
     key: 'stopPropagation',
     value: function stopPropagation() {
@@ -132,6 +135,7 @@ var DorisEvent = (function () {
      *
      * Wrapper for stopImmediatePropagation()
      */
+
   }, {
     key: 'stopImmediatePropagation',
     value: function stopImmediatePropagation() {
@@ -141,10 +145,9 @@ var DorisEvent = (function () {
   }]);
 
   return DorisEvent;
-})();
+}();
 
-exports['default'] = DorisEvent;
-module.exports = exports['default'];
+exports.default = DorisEvent;
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -153,34 +156,30 @@ module.exports = exports['default'];
  *
  * A collection of feature detections required by Doris.
  */
-Object.defineProperty(exports, '__esModule', {
+
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports['default'] = {
-  classListAddMultiple: (function (_) {
+exports.default = {
+  classListAddMultiple: function (_) {
     var p = document.createElement('p');
     p.classList.add('x1', 'x2');
     return p.classList.contains('x2');
-  })()
+  }()
 };
-module.exports = exports['default'];
 
 },{}],4:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _event2 = require('./event');
 
@@ -194,6 +193,12 @@ var _utils = require('./utils');
 
 var utils = _interopRequireWildcard(_utils);
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var EventList = {};
 var elementCount = 0;
 
@@ -204,7 +209,7 @@ var elementCount = 0;
  * @type {DorisObject}
  */
 
-var DorisObject = (function () {
+var DorisObject = function () {
   /**
    *
    * This class should not be instantiatied manually but rather by using the
@@ -217,7 +222,6 @@ var DorisObject = (function () {
    *
    * @param {Array} nodes A list of DOM-nodes to work with.
    */
-
   function DorisObject(nodes) {
     _classCallCheck(this, DorisObject);
 
@@ -240,6 +244,7 @@ var DorisObject = (function () {
    * @return {(Node|undefined)}
    */
 
+
   _createClass(DorisObject, [{
     key: 'get',
     value: function get(index) {
@@ -254,6 +259,7 @@ var DorisObject = (function () {
      * @param {function(node: Node, index: number)} callback
      * @return {DorisObject}
      */
+
   }, {
     key: 'each',
     value: function each(callback) {
@@ -270,6 +276,7 @@ var DorisObject = (function () {
      * @param {string} selector CSS Selector
      * @return {bool}
      */
+
   }, {
     key: 'matches',
     value: function matches(selector) {
@@ -287,6 +294,7 @@ var DorisObject = (function () {
      * @param {string} [selector] CSS Selector to match, will traverse up the
      *     tree until it's matched.
      */
+
   }, {
     key: 'parent',
     value: function parent(selector) {
@@ -322,6 +330,7 @@ var DorisObject = (function () {
      * @param {string} selector CSS Selector to match.
      * @return {DorisObject} The matching nodes in a DorisObject.
      */
+
   }, {
     key: 'find',
     value: function find(selector) {
@@ -347,6 +356,7 @@ var DorisObject = (function () {
      *     insert. If a Node is used, only a single top level element can be specified!
      * @return {DorisObject}
      */
+
   }, {
     key: 'prepend',
     value: function prepend(dom) {
@@ -371,11 +381,12 @@ var DorisObject = (function () {
      *     insert. If a Node is used, only a single top level element can be specified!
      * @return {DorisObject}
      */
+
   }, {
     key: 'append',
     value: function append(dom) {
       for (var i in this.elements) {
-        var nodes = undefined;
+        var nodes = void 0;
         if (typeof dom === 'string') {
           nodes = utils.stringToDOM(dom);
         } else if (dom.doris === true) {
@@ -400,6 +411,7 @@ var DorisObject = (function () {
      *     insert. If a Node is used, only a single top level element can be specified!
      * @return {DorisObject}
      */
+
   }, {
     key: 'before',
     value: function before(dom) {
@@ -420,6 +432,7 @@ var DorisObject = (function () {
      *     insert. If a Node is used, only a single top level element can be specified!
      * @return {DorisObject}
      */
+
   }, {
     key: 'after',
     value: function after(dom) {
@@ -442,6 +455,7 @@ var DorisObject = (function () {
      *
      * @return {DorisObject}
      */
+
   }, {
     key: 'remove',
     value: function remove() {
@@ -465,6 +479,7 @@ var DorisObject = (function () {
      * use as the replacement or a Doris instance.
      * @return {DorisObject} A new instance with the replacement elements.
      */
+
   }, {
     key: 'replace',
     value: function replace(replacement) {
@@ -502,6 +517,27 @@ var DorisObject = (function () {
 
     /**
      *
+     * Returns a new DorisObject containing a cloned copy of the previous one.
+     *
+     * @param {(boolean)} [deep] If the cloning should be deep or not (shallow)
+     * @return {(DorisObject)}
+     */
+
+  }, {
+    key: 'clone',
+    value: function clone(deep) {
+      var elements = [];
+      for (var i in this.elements) {
+        elements.push(this.elements[i].cloneNode(deep));
+      }
+      for (var _i in elements) {
+        elements[_i]._doris = ++elementCount;
+      }
+      return new DorisObject(elements);
+    }
+
+    /**
+     *
      * Returns the HTML content of the first element or sets the innerHTML
      * of every matched element.
      *
@@ -509,6 +545,7 @@ var DorisObject = (function () {
      * or a Node representation that will to converted to markup.
      * @return {(string|DorisObject)}
      */
+
   }, {
     key: 'html',
     value: function html(_html) {
@@ -535,6 +572,7 @@ var DorisObject = (function () {
      * @param {(string|Node)} [text] Text to set in all matching elements.
      * @return {(string|DorisObject)}
      */
+
   }, {
     key: 'text',
     value: function text(_text) {
@@ -546,8 +584,8 @@ var DorisObject = (function () {
         return content;
       }
 
-      for (var e in this.elements) {
-        this.elements[e].textContent = _text;
+      for (var _e in this.elements) {
+        this.elements[_e].textContent = _text;
       }
 
       return this;
@@ -561,6 +599,7 @@ var DorisObject = (function () {
      * @param {...string} classes Names of class(es)
      * @return {DorisObject}
      */
+
   }, {
     key: 'addClass',
     value: function addClass() {
@@ -569,7 +608,7 @@ var DorisObject = (function () {
       }
 
       for (var i in this.elements) {
-        if (_features2['default'].classListAddMultiple) {
+        if (_features2.default.classListAddMultiple) {
           var _elements$i$classList;
 
           (_elements$i$classList = this.elements[i].classList).add.apply(_elements$i$classList, classes);
@@ -590,6 +629,7 @@ var DorisObject = (function () {
      * @param {...string} classes Names of class(es)
      * @return {DorisObject}
      */
+
   }, {
     key: 'removeClass',
     value: function removeClass() {
@@ -598,7 +638,7 @@ var DorisObject = (function () {
       }
 
       for (var i in this.elements) {
-        if (_features2['default'].classListAddMultiple) {
+        if (_features2.default.classListAddMultiple) {
           var _elements$i$classList2;
 
           (_elements$i$classList2 = this.elements[i].classList).remove.apply(_elements$i$classList2, classes);
@@ -619,6 +659,7 @@ var DorisObject = (function () {
      * @param {string} klass Name of class
      * @return {boolean}
      */
+
   }, {
     key: 'hasClass',
     value: function hasClass(klass) {
@@ -636,6 +677,7 @@ var DorisObject = (function () {
      * @param {string} classname Name of class
      * @return {DorisObject}
      */
+
   }, {
     key: 'toggleClass',
     value: function toggleClass(classname) {
@@ -655,6 +697,7 @@ var DorisObject = (function () {
      * @return {(DorisObject|string)} Returns self if value is given, returns the value
      *     of the first element if value isn't given.
      */
+
   }, {
     key: 'attribute',
     value: function attribute(name, value) {
@@ -666,8 +709,8 @@ var DorisObject = (function () {
         }
         return this;
       } else {
-        for (var i in this.elements) {
-          this.elements[i].setAttribute(name, value);
+        for (var _i2 in this.elements) {
+          this.elements[_i2].setAttribute(name, value);
         }
         return this;
       }
@@ -679,6 +722,7 @@ var DorisObject = (function () {
      *
      * @param {string} attribute
      */
+
   }, {
     key: 'removeAttribute',
     value: function removeAttribute(attribute) {
@@ -698,13 +742,14 @@ var DorisObject = (function () {
      * @param {string} [value]
      * @return {(DorisObject|string)}
      */
+
   }, {
     key: 'css',
     value: function css(style, value) {
       var _this2 = this;
 
-      if (value !== undefined && value !== null || typeof style === 'object') {
-        var _loop = function (i) {
+      if (value !== undefined && value !== null || (typeof style === 'undefined' ? 'undefined' : _typeof(style)) === 'object') {
+        var _loop = function _loop(i) {
           if (typeof style === 'string') {
             _this2.elements[i].style[style] = value;
           } else {
@@ -730,6 +775,7 @@ var DorisObject = (function () {
      *
      * @return {number}
      */
+
   }, {
     key: 'width',
     value: function width() {
@@ -747,6 +793,7 @@ var DorisObject = (function () {
      *
      * @return {number}
      */
+
   }, {
     key: 'height',
     value: function height() {
@@ -763,6 +810,7 @@ var DorisObject = (function () {
      *
      * @return {Object.<string, number>}
      */
+
   }, {
     key: 'size',
     value: function size() {
@@ -777,6 +825,7 @@ var DorisObject = (function () {
      * @property {number} left
      * @return {Object}
      */
+
   }, {
     key: 'offset',
     value: function offset() {
@@ -806,6 +855,7 @@ var DorisObject = (function () {
      * @return {(DorisObject|string)} Returns self if value is given, returns the value
      *     of the first element if value isn't given.
      */
+
   }, {
     key: 'data',
     value: function data(key, value) {
@@ -837,25 +887,24 @@ var DorisObject = (function () {
      * @param {object} [options] Option object for addEventListener
      * @return {DorisObject}
      */
+
   }, {
     key: 'on',
     value: function on(event, selector, callback, options) {
-      var _DorisObject$_parseEventArguments = DorisObject._parseEventArguments(arguments);
-
-      var _DorisObject$_parseEventArguments2 = _slicedToArray(_DorisObject$_parseEventArguments, 4);
-
-      var _event = _DorisObject$_parseEventArguments2[0];
-      var _selector = _DorisObject$_parseEventArguments2[1];
-      var _callback = _DorisObject$_parseEventArguments2[2];
-      var _options = _DorisObject$_parseEventArguments2[3];
+      var _DorisObject$_parseEv = DorisObject._parseEventArguments(arguments),
+          _DorisObject$_parseEv2 = _slicedToArray(_DorisObject$_parseEv, 4),
+          _event = _DorisObject$_parseEv2[0],
+          _selector = _DorisObject$_parseEv2[1],
+          _callback = _DorisObject$_parseEv2[2],
+          _options = _DorisObject$_parseEv2[3];
 
       _options = _options === undefined ? false : _options;
-      if (typeof _options === 'object' && _options['capture'] === undefined) {
+      if ((typeof _options === 'undefined' ? 'undefined' : _typeof(_options)) === 'object' && _options['capture'] === undefined) {
         _options['capture'] = false;
       }
 
       var caller = function caller(id, e) {
-        var event = new _event3['default'](e);
+        var event = new _event3.default(e);
         if (!EventList[id].events[event.type]) {
           return;
         }
@@ -926,20 +975,19 @@ var DorisObject = (function () {
      * @param {object} [options] Option object for addEventListener
      * @return {DorisObject}
      */
+
   }, {
     key: 'once',
     value: function once(event, selector, callback, options) {
-      var _DorisObject$_parseEventArguments3 = DorisObject._parseEventArguments(arguments);
-
-      var _DorisObject$_parseEventArguments32 = _slicedToArray(_DorisObject$_parseEventArguments3, 4);
-
-      var _event = _DorisObject$_parseEventArguments32[0];
-      var _selector = _DorisObject$_parseEventArguments32[1];
-      var _callback = _DorisObject$_parseEventArguments32[2];
-      var _options = _DorisObject$_parseEventArguments32[3];
+      var _DorisObject$_parseEv3 = DorisObject._parseEventArguments(arguments),
+          _DorisObject$_parseEv4 = _slicedToArray(_DorisObject$_parseEv3, 4),
+          _event = _DorisObject$_parseEv4[0],
+          _selector = _DorisObject$_parseEv4[1],
+          _callback = _DorisObject$_parseEv4[2],
+          _options = _DorisObject$_parseEv4[3];
 
       _options = _options === undefined ? {} : _options;
-      if (typeof _options === 'object' && _options['capture'] === undefined) {
+      if ((typeof _options === 'undefined' ? 'undefined' : _typeof(_options)) === 'object' && _options['capture'] === undefined) {
         _options['capture'] = false;
       }
 
@@ -961,21 +1009,20 @@ var DorisObject = (function () {
      *     match everything if needed when specifying callback).
      * @param {function} [callback] Callback to unbind, if this isn't specified
      *     everything will be unbound.
-     * @param {number} node Internal use only.
+     * @param {number} [node] Internal use only.
      * @return {DorisObject}
      */
+
   }, {
     key: 'off',
     value: function off(event, selector, callback, node) {
-      var _DorisObject$_parseEventArguments4 = DorisObject._parseEventArguments(arguments);
-
-      var _DorisObject$_parseEventArguments42 = _slicedToArray(_DorisObject$_parseEventArguments4, 5);
-
-      var _event = _DorisObject$_parseEventArguments42[0];
-      var _selector = _DorisObject$_parseEventArguments42[1];
-      var _callback = _DorisObject$_parseEventArguments42[2];
-      var _ = _DorisObject$_parseEventArguments42[3];
-      var _node = _DorisObject$_parseEventArguments42[4];
+      var _DorisObject$_parseEv5 = DorisObject._parseEventArguments(arguments),
+          _DorisObject$_parseEv6 = _slicedToArray(_DorisObject$_parseEv5, 5),
+          _event = _DorisObject$_parseEv6[0],
+          _selector = _DorisObject$_parseEv6[1],
+          _callback = _DorisObject$_parseEv6[2],
+          _ = _DorisObject$_parseEv6[3],
+          _node = _DorisObject$_parseEv6[4];
 
       for (var i in this.elements) {
         var id = this.elements[i]._doris;
@@ -1014,10 +1061,11 @@ var DorisObject = (function () {
      * @param {(string|Event)} event
      * @return {DorisObject}
      */
+
   }, {
     key: 'trigger',
     value: function trigger(event) {
-      var e = undefined;
+      var e = void 0;
       if (event === 'click') {
         // From https://developer.mozilla.org/samples/domref/dispatchEvent.html
         e = document.createEvent("MouseEvents");
@@ -1038,6 +1086,7 @@ var DorisObject = (function () {
      * Returns a string representation of the elements.
      * @return {string}
      */
+
   }, {
     key: 'toHTML',
     value: function toHTML() {
@@ -1054,6 +1103,7 @@ var DorisObject = (function () {
      * Matches a selector on an element.
      * @private
      */
+
   }], [{
     key: '_matchSelector',
     value: function _matchSelector(element, selector) {
@@ -1072,6 +1122,7 @@ var DorisObject = (function () {
      * Argument parsing for event handling.
      * @private
      */
+
   }, {
     key: '_parseEventArguments',
     value: function _parseEventArguments(args) {
@@ -1083,7 +1134,7 @@ var DorisObject = (function () {
 
       if (typeof args[1] === 'function') {
         callback = args[1];
-        if (args[2] !== null && typeof args[2] === 'object') {
+        if (args[2] !== null && _typeof(args[2]) === 'object') {
           options = args[2];
         }
       } else if (typeof args[1] === 'string' && !args[2]) {
@@ -1091,7 +1142,7 @@ var DorisObject = (function () {
       } else if (args[3] || typeof args[2] === 'function') {
         selector = args[1];
         callback = args[2];
-        if (args[3] !== null && typeof args[3] === 'object') {
+        if (args[3] !== null && _typeof(args[3]) === 'object') {
           options = args[3];
           if (args[4] !== undefined) {
             node = args[4];
@@ -1106,11 +1157,10 @@ var DorisObject = (function () {
   }]);
 
   return DorisObject;
-})();
+}();
 
-exports['default'] = DorisObject;
+exports.default = DorisObject;
 ;
-module.exports = exports['default'];
 
 },{"./event":2,"./features":3,"./utils":5}],5:[function(require,module,exports){
 'use strict';
@@ -1121,11 +1171,11 @@ module.exports = exports['default'];
  * @param {string} string A string representation of the DOM.
  * @return {Array<Node>}
  */
-Object.defineProperty(exports, '__esModule', {
+
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.stringToDOM = stringToDOM;
-
 function stringToDOM(string) {
   var fragment = document.createDocumentFragment();
   fragment.appendChild(document.createElement('body'));

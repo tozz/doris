@@ -270,7 +270,7 @@ export default class DorisObject {
         let previousNode = new DorisObject([this.get(e)]);
         replacement.each(function(n) {
           let s = m ? n.cloneNode(true) : n;
-          newCollection.push(s)
+          newCollection.push(s);
           previousNode.after(s);
           previousNode = window.doris(s);
         });
@@ -279,6 +279,24 @@ export default class DorisObject {
     }
 
     return new DorisObject(newCollection);
+  }
+
+  /**
+   *
+   * Returns a new DorisObject containing a cloned copy of the previous one.
+   *
+   * @param {(boolean)} [deep] If the cloning should be deep or not (shallow)
+   * @return {(DorisObject)}
+   */
+  clone(deep) {
+    let elements = [];
+    for (let i in this.elements) {
+      elements.push(this.elements[i].cloneNode(deep));
+    }
+    for (let i in elements) {
+      elements[i]._doris = ++elementCount;
+    }
+    return new DorisObject(elements);
   }
 
   /**
@@ -671,7 +689,7 @@ export default class DorisObject {
    *     match everything if needed when specifying callback).
    * @param {function} [callback] Callback to unbind, if this isn't specified
    *     everything will be unbound.
-   * @param {number} node Internal use only.
+   * @param {number} [node] Internal use only.
    * @return {DorisObject}
    */
   off(event, selector, callback, node) {

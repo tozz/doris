@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Doris Tests</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.3.4/mocha.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.5.3/mocha.min.css" />
 </head>
 <body>
   <div id="test-area" style="opacity: 0; height: 0;">
@@ -33,12 +33,16 @@
     <div class="test-text">a</div>
     <div class="test-text">b</div>
     <div class="test-text">c</div>
+    <div id="clone-parent">
+      <div id="cloned-brother"></div>
+      <div id="cloned-sister"></div>
+    </div>
   </div>
 
   <div id="mocha"></div>
 
   <script src="http://chaijs.com/chai.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.3.4/mocha.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.5.3/mocha.min.js"></script>
   <script src="array.from.js"></script>
   <script src="../dist/doris.min.js"></script>
   <script>mocha.setup('bdd')</script>
