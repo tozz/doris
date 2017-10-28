@@ -1,7 +1,5 @@
-'use strict';
-
 import DorisObject from './object';
-import * as utils from './utils';
+import utils from './utils';
 
 /**
  *
@@ -13,28 +11,29 @@ import * as utils from './utils';
  * @return {DorisObject}
  */
 export default function doris(nodes) {
+  let nodesObject;
   if (nodes instanceof Node) {
     // Standard DOM node.
-    nodes = [nodes];
+    nodesObject = [nodes];
   } else if (typeof nodes === 'object' && nodes.elements) {
     // Another DorisObject being passed
-    nodes = nodes.elements;
+    nodesObject = nodes.elements;
   } else if (nodes === document || nodes === document.documentElement) {
-    nodes = [document.documentElement];
+    nodesObject = [document.documentElement];
   } else if (nodes === window) {
-    nodes = [window];
-  } else if (typeof nodes === 'string'){
+    nodesObject = [window];
+  } else if (typeof nodes === 'string') {
     try {
-      nodes = document.querySelectorAll(nodes);
+      nodesObject = document.querySelectorAll(nodes);
     } catch (e) {
       if (e instanceof DOMException) {
-        nodes = utils.stringToDOM(nodes);
+        nodesObject = utils.stringToDOM(nodes);
       } else {
         throw new Error('Invalid Doris argument!');
       }
     }
   }
-  return new DorisObject(nodes);
+  return new DorisObject(nodesObject);
 }
 
 if (typeof window !== 'undefined') {

@@ -1,10 +1,8 @@
-'use strict';
-
 import DorisEvent from './event';
 import Features from './features';
-import * as utils from './utils';
+import utils from './utils';
 
-let EventList = {};
+const EventList = {};
 let elementCount = 0;
 
 /**
@@ -16,7 +14,7 @@ let elementCount = 0;
 export default class DorisObject {
   /**
    *
-   * This class should not be instantiatied manually but rather by using the
+   * This class should not be instantiated manually but rather by using the
    *     doris() helper.
    *
    * @example
@@ -29,13 +27,14 @@ export default class DorisObject {
   constructor(nodes) {
     this.elements = Array.from(nodes);
     this.doris = true;
-    for (let i in this.elements) {
-      if (this.elements[i]._doris === undefined) {
-        this.elements[i]._doris = ++elementCount;
+    Object.keys(this.elements).forEach((i) => {
+      if (this.elements[i].dorisId === undefined) {
+        elementCount += 1;
+        this.elements[i].dorisId = elementCount;
       }
       this[i] = this.elements[i];
-    }
-    this.length = this.elements.length
+    });
+    this.length = this.elements.length;
   }
 
   /**
@@ -58,10 +57,9 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   each(callback) {
-    for (let i in this.elements) {
-      callback.apply(new DorisObject([this.elements[i]]),
-                     [this.elements[i], parseInt(i)]);
-    }
+    Object.keys(this.elements).forEach((i) => {
+      callback.apply(new DorisObject([this.elements[i]]), [this.elements[i], parseInt(i, 10)]);
+    });
     return this;
   }
 
@@ -70,10 +68,10 @@ export default class DorisObject {
    * Check if the first element matches the selector.
    *
    * @param {string} selector CSS Selector
-   * @return {bool}
+   * @return {boolean}
    */
   matches(selector) {
-    return DorisObject._matchSelector(this.elements[0], selector);
+    return DorisObject.matchSelector(this.elements[0], selector);
   }
 
   /**
@@ -88,27 +86,26 @@ export default class DorisObject {
    *     tree until it's matched.
    */
   parent(selector) {
-    let list = [];
-    for (let i in this.elements) {
+    const list = [];
+    Object.values(this.elements).forEach((element) => {
       if (selector) {
-        let t = this.elements[i].parentNode,
-            match = false;
+        let t = element.parentNode;
+        let match = false;
 
-        while (!(match = DorisObject._matchSelector(t, selector))) {
-          if (t.tagName === 'HTML') { break }
+        while (t.tagName !== 'HTML' && t.tagName !== undefined) {
+          match = DorisObject.matchSelector(t, selector);
+          if (match) { break; }
           t = t.parentNode;
         }
 
         if (match && list.indexOf(t) < 0) {
           list.push(t);
         }
-      } else {
-        if (this.elements[i].parentNode.tagName !== 'HTML' &&
-            list.indexOf(this.elements[i].parentNode) < 0) {
-          list.push(this.elements[i].parentNode);
-        }
+      } else if (element.parentNode.tagName !== 'HTML' &&
+          list.indexOf(element.parentNode) < 0) {
+        list.push(element.parentNode);
       }
-    }
+    });
     return new DorisObject(list);
   }
 
@@ -120,16 +117,19 @@ export default class DorisObject {
    * @return {DorisObject} The matching nodes in a DorisObject.
    */
   find(selector) {
-    let list = [];
+    const list = [];
     if (selector) {
-      for (let i in this.elements) {
-        let elements = Array.from(this.elements[i].querySelectorAll(selector));
-        for (let e in elements) {
+      Object.values(this.elements).forEach((element) => {
+        if (!element.querySelectorAll) {
+          return;
+        }
+        const elements = Array.from(element.querySelectorAll(selector));
+        Object.keys(elements).forEach((e) => {
           if (list.indexOf(elements[e]) === -1) {
             list.push(elements[e]);
           }
-        }
-      }
+        });
+      });
     }
     return new DorisObject(list);
   }
@@ -143,16 +143,16 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   prepend(dom) {
-    for (let i in this.elements) {
+    Object.values(this.elements).forEach((element) => {
       const nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
-      for (let n in nodes.reverse()) {
-        if (this.elements[i].firstChild) {
-          this.elements[i].insertBefore(nodes[n], this.elements[i].firstChild);
+      Object.values(nodes.reverse()).forEach((node) => {
+        if (element.firstChild) {
+          element.insertBefore(node, element.firstChild);
         } else {
-          this.elements[i].appendChild(nodes[n]);
+          element.appendChild(node);
         }
-      }
-    }
+      });
+    });
     return this;
   }
 
@@ -165,21 +165,21 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   append(dom) {
-    for (let i in this.elements) {
+    Object.values(this.elements).forEach((element) => {
       let nodes;
       if (typeof dom === 'string') {
-        nodes = utils.stringToDOM(dom)
+        nodes = utils.stringToDOM(dom);
       } else if (dom.doris === true) {
         nodes = dom.elements;
       } else {
         // Assume this is a created node
-        nodes = [dom]
+        nodes = [dom];
       }
 
-      for (let n in nodes) {
-        this.elements[i].appendChild(nodes[n])
-      }
-    }
+      Object.values(nodes).forEach((node) => {
+        element.appendChild(node);
+      });
+    });
     return this;
   }
 
@@ -192,12 +192,12 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   before(dom) {
-    for (let i in this.elements) {
+    Object.values(this.elements).forEach((element) => {
       const nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
-      for (let n in nodes) {
-        this.elements[i].parentNode.insertBefore(nodes[n], this.elements[i]);
-      }
-    }
+      Object.values(nodes).forEach((node) => {
+        element.parentNode.insertBefore(node, element);
+      });
+    });
     return this;
   }
 
@@ -210,18 +210,18 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   after(dom) {
-    for (let i in this.elements) {
+    Object.values(this.elements).forEach((element) => {
       const nodes = typeof dom === 'string' ? utils.stringToDOM(dom) : [dom];
-      for (let n in nodes.reverse()) {
-        if (this.elements[i].nextSibling) {
-          this.elements[i]
-              .parentNode
-              .insertBefore(nodes[n], this.elements[i].nextSibling);
+      Object.values(nodes.reverse()).forEach((node) => {
+        if (element.nextSibling) {
+          element
+            .parentNode
+            .insertBefore(node, element.nextSibling);
         } else {
-          this.elements[i].parentNode.appendChild(nodes[n]);
+          element.parentNode.appendChild(node);
         }
-      }
-    }
+      });
+    });
     return this;
   }
 
@@ -232,11 +232,11 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   remove() {
-    for (let i in this.elements) {
+    Object.keys(this.elements).forEach((i) => {
       this.elements[i].parentNode.removeChild(this.elements[i]);
       delete this.elements[i];
       delete this[i];
-    }
+    });
     this.length = this.elements.length;
     return this;
   }
@@ -253,30 +253,31 @@ export default class DorisObject {
    * @return {DorisObject} A new instance with the replacement elements.
    */
   replace(replacement) {
-    if (typeof replacement === 'string') {
-      replacement = window.doris(replacement);
+    let replacementValue = replacement;
+    if (typeof replacementValue === 'string') {
+      replacementValue = window.doris(replacementValue);
     }
 
-    let newCollection = [];
+    const newCollection = [];
 
     const m = this.elements.length > 1;
 
-    for (let e in this.elements) {
-      if (replacement.elements.length === 1) {
-        let s = m ? replacement.elements[0].cloneNode(true) : replacement.elements[0]
+    Object.keys(this.elements).forEach((e) => {
+      if (replacementValue.elements.length === 1) {
+        const s = m ? replacementValue.elements[0].cloneNode(true) : replacementValue.elements[0];
         this.elements[e].parentNode.replaceChild(s, this.elements[e]);
         newCollection.push(s);
       } else {
         let previousNode = new DorisObject([this.get(e)]);
-        replacement.each(function(n) {
-          let s = m ? n.cloneNode(true) : n;
+        replacementValue.each((n) => {
+          const s = m ? n.cloneNode(true) : n;
           newCollection.push(s);
           previousNode.after(s);
           previousNode = window.doris(s);
         });
         new DorisObject([this.get(e)]).remove();
       }
-    }
+    });
 
     return new DorisObject(newCollection);
   }
@@ -289,13 +290,14 @@ export default class DorisObject {
    * @return {(DorisObject)}
    */
   clone(deep) {
-    let elements = [];
-    for (let i in this.elements) {
-      elements.push(this.elements[i].cloneNode(deep));
-    }
-    for (let i in elements) {
-      elements[i]._doris = ++elementCount;
-    }
+    const elements = [];
+    Object.values(this.elements).forEach((element) => {
+      elements.push(element.cloneNode(deep));
+    });
+    Object.keys(elements).forEach((i) => {
+      elementCount += 1;
+      elements[i].dorisId = elementCount;
+    });
     return new DorisObject(elements);
   }
 
@@ -313,13 +315,15 @@ export default class DorisObject {
       return this.elements[0].innerHTML;
     }
 
-    if (typeof html !== 'string') {
-      html = doris(html).toHTML();
+    let newHTML = html;
+
+    if (typeof newHTML !== 'string') {
+      newHTML = doris(newHTML).toHTML();
     }
 
-    for (let e in this.elements) {
-      this.elements[e].innerHTML = html;
-    }
+    Object.keys(this.elements).forEach((e) => {
+      this.elements[e].innerHTML = newHTML;
+    });
 
     return this;
   }
@@ -335,15 +339,15 @@ export default class DorisObject {
   text(text) {
     if (text === undefined) {
       let content = '';
-      for (let e in this.elements) {
-        content += this.elements[e].textContent;
-      }
+      Object.values(this.elements).forEach((element) => {
+        content += element.textContent;
+      });
       return content;
     }
 
-    for (let e in this.elements) {
-      this.elements[e].textContent = text;
-    }
+    Object.keys(this.elements).forEach((i) => {
+      this.elements[i].textContent = text;
+    });
 
     return this;
   }
@@ -357,15 +361,15 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   addClass(...classes) {
-    for (let i in this.elements) {
+    Object.keys(this.elements).forEach((key) => {
       if (Features.classListAddMultiple) {
-        this.elements[i].classList.add(...classes);
+        this.elements[key].classList.add(...classes);
       } else {
-        for (let c in classes) {
-          this.elements[i].classList.add(classes[c]);
-        }
+        Object.values(classes).forEach((value) => {
+          this.elements[key].classList.add(classes[value]);
+        });
       }
-    }
+    });
     return this;
   }
 
@@ -378,15 +382,15 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   removeClass(...classes) {
-    for (let i in this.elements) {
+    Object.values(this.elements).forEach((element) => {
       if (Features.classListAddMultiple) {
-        this.elements[i].classList.remove(...classes);
+        element.classList.remove(...classes);
       } else {
-        for (let c in classes) {
-          this.elements[i].classList.remove(classes[c]);
-        }
+        Object.values(classes).forEach((c) => {
+          element.classList.remove(classes[c]);
+        });
       }
-    }
+    });
     return this;
   }
 
@@ -414,9 +418,9 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   toggleClass(classname) {
-    for (let i in this.elements) {
-      this.elements[i].classList.toggle(classname);
-    }
+    Object.values(this.elements).forEach((element) => {
+      element.classList.toggle(classname);
+    });
     return this;
   }
 
@@ -434,16 +438,16 @@ export default class DorisObject {
     if (value === undefined) {
       return this.elements[0].getAttribute(name);
     } else if (value === false) {
-      for (let i in this.elements) {
-        this.elements[i].removeAttribute(name);
-      }
-      return this;
-    } else {
-      for (let i in this.elements) {
-        this.elements[i].setAttribute(name, value);
-      }
+      Object.values(this.elements).forEach((element) => {
+        element.removeAttribute(name);
+      });
       return this;
     }
+
+    Object.values(this.elements).forEach((element) => {
+      element.setAttribute(name, value);
+    });
+    return this;
   }
 
   /**
@@ -453,9 +457,10 @@ export default class DorisObject {
    * @param {string} attribute
    */
   removeAttribute(attribute) {
-    for (let i in this.elements) {
-      this.elements[i].removeAttribute(attribute);
-    }
+    Object.values(this.elements).forEach((element) => {
+      element.removeAttribute(attribute);
+    });
+
     return this;
   }
 
@@ -471,7 +476,7 @@ export default class DorisObject {
    */
   css(style, value) {
     if ((value !== undefined && value !== null) || typeof style === 'object') {
-      for (let i in this.elements) {
+      Object.keys(this.elements).forEach((i) => {
         if (typeof style === 'string') {
           this.elements[i].style[style] = value;
         } else {
@@ -479,11 +484,11 @@ export default class DorisObject {
             this.elements[i].style[s] = style[s];
           });
         }
-      }
+      });
       return this;
-    } else {
-      return getComputedStyle(this.elements[0]).getPropertyValue(style);
     }
+
+    return getComputedStyle(this.elements[0]).getPropertyValue(style);
   }
 
   /**
@@ -497,7 +502,7 @@ export default class DorisObject {
     if (this.elements[0] === window) {
       return window.innerWidth;
     }
-    let d = this.elements[0].getBoundingClientRect();
+    const d = this.elements[0].getBoundingClientRect();
     return d.width;
   }
 
@@ -512,7 +517,7 @@ export default class DorisObject {
     if (this.elements[0] === window) {
       return window.innerHeight;
     }
-    let d = this.elements[0].getBoundingClientRect();
+    const d = this.elements[0].getBoundingClientRect();
     return d.height;
   }
 
@@ -536,18 +541,18 @@ export default class DorisObject {
    */
   offset() {
     if (this.elements[0] === window) {
-      return {left: 0, top: 0};
+      return { left: 0, top: 0 };
     }
-    let e = this.elements[0],
-        left = 0,
-        top = 0;
+    let e = this.elements[0];
+    let left = 0;
+    let top = 0;
 
     while (e !== null && e.tagName !== 'BODY') {
       left += e.offsetLeft;
       top += e.offsetTop;
       e = e.offsetParent;
     }
-    return {left: left, top: top};
+    return { left, top };
   }
 
   /**
@@ -562,8 +567,8 @@ export default class DorisObject {
    *     of the first element if value isn't given.
    */
   data(key, value) {
-    key = key.replace('data-', '');
-    let dataKey = key.replace(/-([a-z])/g, (match, p1) => {
+    const keyName = key.replace('data-', '');
+    const dataKey = keyName.replace(/-([a-z])/g, (match, p1) => {
       if (p1) {
         return p1.toUpperCase();
       }
@@ -571,83 +576,91 @@ export default class DorisObject {
     });
 
     if (value) {
-      for (let i in this.elements) {
+      Object.keys(this.elements).forEach((i) => {
         this.elements[i].dataset[dataKey] = value;
-      }
+      });
       return this;
-    } else {
-      return this.elements[0].dataset[dataKey];
     }
+
+    return this.elements[0].dataset[dataKey];
   }
 
   /**
    *
-   * Binds events
+   * Binds events on elements, can match on selectors. Callback will receive a DorisEvent
+   * and the target of the bound element, not the element that triggered the event, it will
+   * be available on DorisEvent.originalEvent.target as usual.
    *
    * @param {string} event Name of event.
-   * @param {string} [selector] Optional CSS selector for event delegation.
-   * @param {function(event: DorisEvent)} callback Callback for given event.
-   * @param {object} [options] Option object for addEventListener
+   * @param {...(string|function|object)} [args] Selector, Callback and Options arguments
+   * @example
+   * // Bind a click event on all <div> elements
+   * doris('div').on('click', (e, target) => e.preventDefault())
+   * @example
+   * // Bind a click event on document with a selector (delegation)
+   * doris(document).on('click', '.click-element', (e, target) => {
+   *   // target will be the .click-element
+   * })
+   * @example
+   * // Bind a callback for scrolling but make it passive
+   * doris(document).on('scroll', callback, { passive: true })
    * @return {DorisObject}
    */
-  on(event, selector, callback, options) {
-    let [_event, _selector, _callback, _options] = DorisObject._parseEventArguments(arguments);
-    _options = _options === undefined ? false : _options;
-    if (typeof(_options) === 'object' && _options['capture'] === undefined) {
-      _options['capture'] = false;
-    }
+  on(event, ...args) {
+    const [parsedEvent, parsedSelector, parsedCallback, parsedOptions] =
+      DorisObject.parseEventArguments([event, ...args]);
+    const options = parsedOptions === undefined ? false : parsedOptions;
 
-    let caller = function(id, e) {
-      let event = new DorisEvent(e);
-      if (!EventList[id].events[event.type]) { return; }
+    const caller = (id, e) => {
+      const dorisEvent = new DorisEvent(e);
+      if (!EventList[id].events[dorisEvent.type]) { return; }
 
-      let target = event.target;
+      const parser = (target) => {
+        if (dorisEvent.propagationStopped) { return; }
 
-      while(true) {
-        if (event.propagationStopped) { break; }
-
-        for (let i in EventList[id].events[event.type]) {
-          if (event.immediatePropagationStopped) { continue; }
-
-          let eventData = EventList[id].events[event.type][i];
-          if (eventData.selector === '*' && target._doris === id ||
-              eventData.selector !== '*' &&
-              DorisObject._matchSelector(target, eventData.selector)) {
-
-            eventData.callback.call(new DorisObject([target]), event);
-            if (eventData.callback.one) {
-              this.off(event.type, eventData.callback.selector, eventData.callback.one, id);
+        Object.keys(EventList[id].events[dorisEvent.type]).forEach((i) => {
+          if (!dorisEvent.immediatePropagationStopped) {
+            const eventData = EventList[id].events[dorisEvent.type][i];
+            if ((eventData.selector === '*' && target.dorisId === id) ||
+              (eventData.selector !== '*' &&
+              DorisObject.matchSelector(target, eventData.selector))) {
+              eventData.callback.call(new DorisObject([target]), dorisEvent, target);
+              if (eventData.callback.one) {
+                this.off(dorisEvent.type, eventData.callback.selector, eventData.callback.one, id);
+              }
             }
           }
-        }
+        });
+        if (target.dorisId === id || target.parentNode === null) { return; }
 
-        if (target._doris === id || target.parentNode === null) { break; }
-        target = target.parentNode;
-      }
+        parser(target.parentNode);
+      };
+
+      parser(dorisEvent.target);
     };
 
-    for (let i in this.elements) {
-      let id = this.elements[i]._doris;
+    Object.values(this.elements).forEach((element) => {
+      const id = element.dorisId;
       if (!EventList[id]) {
         EventList[id] = {
           events: {},
           call: caller.bind(this, id),
-          counts: {}
+          counts: {},
         };
       }
-      if (!EventList[id].events[_event]) {
-        EventList[id].events[_event] = [];
-        EventList[id].counts[_event] = 0;
+      if (!EventList[id].events[parsedEvent]) {
+        EventList[id].events[parsedEvent] = [];
+        EventList[id].counts[parsedEvent] = 0;
       }
 
-      EventList[id].events[_event].push({
-        selector: _selector,
-        callback: _callback
+      EventList[id].events[parsedEvent].push({
+        selector: parsedSelector,
+        callback: parsedCallback,
       });
-      EventList[id].counts[_event] += 1;
+      EventList[id].counts[parsedEvent] += 1;
 
-      this.elements[i].addEventListener(_event, EventList[id].call, _options);
-    }
+      element.addEventListener(parsedEvent, EventList[id].call, options);
+    });
 
     return this;
   }
@@ -656,74 +669,81 @@ export default class DorisObject {
    *
    * Binds an event that will only happen once.
    *
+   * @see {@link on}
    * @param {string} event Name of event.
-   * @param {string} [selector] Optional CSS selector for event delegation.
-   * @param {function} callback Callback for given event, passed event as an
-   *     argument.
-   * @param {object} [options] Option object for addEventListener
+   * @param {...(string|function|object)} [args] Selector and Callback arguments
    * @return {DorisObject}
    */
-  once(event, selector, callback, options) {
-    let [_event, _selector, _callback, _options] =
-          DorisObject._parseEventArguments(arguments);
-    _options = _options === undefined ? {} : _options;
-    if (typeof(_options) === 'object' && _options['capture'] === undefined) {
-      _options['capture'] = false;
-    }
+  once(event, ...args) {
+    const [parsedEvent, parsedSelector, parsedCallback, , parsedOptions] =
+      DorisObject.parseEventArguments([event, ...args]);
 
-    let wrappedCallback = function(e) {
-      _callback.call(this, e);
+    const options = parsedOptions === undefined ? {} : parsedOptions;
+
+    const wrappedCallback = function wrappedCallback(e) {
+      parsedCallback.call(this, e);
     };
-    wrappedCallback.one = _callback;
-    wrappedCallback.selector = _selector;
+    wrappedCallback.one = parsedCallback;
+    wrappedCallback.selector = parsedSelector;
 
-    this.on(_event, _selector, wrappedCallback);
+    this.on(parsedEvent, parsedSelector, wrappedCallback, options);
 
     return this;
   }
 
   /**
+   *
    * Unbind events
+   *
    * @param {string} event name of event.
-   * @param {string} [selector] Optional CSS selector to match (use '*' to
-   *     match everything if needed when specifying callback).
-   * @param {function} [callback] Callback to unbind, if this isn't specified
-   *     everything will be unbound.
-   * @param {number} [node] Internal use only.
+   * @param {...(string|function|object)} [args] Selector and Callback arguments
+   * @example
+   * // Removes all click events on body
+   * off('click', 'body')
+   * @example
+   * // Removes all click events with the same callback
+   * off('click', callback)
+   * @example
+   * // Removes all click events for li matching the callback
+   * off('click', 'li', callback)
    * @return {DorisObject}
    */
-  off(event, selector, callback, node) {
-    let [_event, _selector, _callback, _, _node] =
-          DorisObject._parseEventArguments(arguments);
+  off(event, ...args) {
+    const [parsedEvent, parsedSelector, parsedCallback, , parsedNode] =
+          DorisObject.parseEventArguments([event, ...args]);
 
-    for (let i in this.elements) {
-      let id = this.elements[i]._doris;
-      if (_node !== undefined && id !== _node) { continue }
+    Object.values(this.elements).forEach((element) => {
+      const id = element.dorisId;
 
-      if (EventList[id].events[_event]) {
-        let boundEvents = EventList[id].counts[_event];
+      if (parsedNode === undefined || id === parsedNode) {
+        if (EventList[id].events[parsedEvent]) {
+          let boundEvents = EventList[id].counts[parsedEvent];
 
-        for (let e in EventList[id].events[_event]) {
-          let evt = EventList[id].events[_event][e];
+          Object.keys(EventList[id].events[parsedEvent]).forEach((e) => {
+            const evt = EventList[id].events[parsedEvent][e];
+            const selectorMatches = evt.selector === parsedSelector || parsedSelector === '*';
+            let callbackMatches = false;
+            if (!parsedCallback) {
+              callbackMatches = true;
+            } else if (evt.callback.one && evt.callback.one === parsedCallback) {
+              callbackMatches = true;
+            } else if (parsedCallback === evt.callback) {
+              callbackMatches = true;
+            }
 
-          if (evt.selector === _selector &&
-            (!_callback || (_callback &&((evt.callback.one &&
-                           evt.callback.one === _callback) ||
-            (_callback === evt.callback))))) {
+            if (selectorMatches && callbackMatches) {
+              delete EventList[id].events[parsedEvent][e];
+              EventList[id].counts[parsedEvent] -= 1;
+              boundEvents -= 1;
+            }
+          });
 
-            delete EventList[id].events[_event][e];
-            --boundEvents;
+          if (boundEvents === 0) {
+            element.removeEventListener(parsedEvent, EventList[id].call, false);
           }
         }
-
-        if (boundEvents === 0) {
-          this.elements[i].removeEventListener(_event,
-                                               EventList[id].call, false);
-          delete EventList[id].events[_event];
-          delete EventList[id].counts[_event];
-        }
       }
-    }
+    });
 
     return this;
   }
@@ -739,17 +759,18 @@ export default class DorisObject {
     let e;
     if (event === 'click') {
       // From https://developer.mozilla.org/samples/domref/dispatchEvent.html
-      e = document.createEvent("MouseEvents");
-      e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false,
-                       false, false, false, 0, null);
+      e = document.createEvent('MouseEvents');
+      e.initMouseEvent(
+        'click', true, true, window, 0, 0, 0, 0, 0, false,
+        false, false, false, 0, null,
+      );
     } else {
       e = document.createEvent('Event');
       e.initEvent(event, true, true);
     }
 
-    for (let i in this.elements) {
-      this.elements[i].dispatchEvent(e);
-    }
+    Object.values(this.elements).forEach(element => element.dispatchEvent(e));
+
     return this;
   }
 
@@ -759,11 +780,11 @@ export default class DorisObject {
    * @return {string}
    */
   toHTML() {
-    let fragment = document.createDocumentFragment();
+    const fragment = document.createDocumentFragment();
     fragment.appendChild(document.createElement('body'));
-    for (let i in this.elements) {
-      fragment.childNodes[0].appendChild(this.elements[i]);
-    }
+    Object.values(this.elements).forEach((element) => {
+      fragment.childNodes[0].appendChild(element);
+    });
     return fragment.childNodes[0].innerHTML;
   }
 
@@ -772,15 +793,12 @@ export default class DorisObject {
    * Matches a selector on an element.
    * @private
    */
-  static _matchSelector(element, selector) {
+  static matchSelector(element, selector) {
     if (element === document) {
       return false;
     }
-    let f = Element.prototype.matches || Element.prototype.msMatchesSelector;
-    if (!f) {
-      return false;
-    }
-    return f.call(element, selector);
+    const f = Element.prototype.matches || Element.prototype.msMatchesSelector;
+    return f ? f.call(element, selector) : false;
   }
 
   /**
@@ -788,33 +806,30 @@ export default class DorisObject {
    * Argument parsing for event handling.
    * @private
    */
-  static _parseEventArguments(args) {
-    let event = args[0],
-        selector = '*',
-        callback = undefined,
-        options = undefined,
-        node = undefined;
+  static parseEventArguments(args) {
+    let event;
+    let callback;
+    let selector = '*';
+    let node;
+    let options;
 
     if (typeof args[1] === 'function') {
-      callback = args[1];
-      if (args[2] !== null && typeof(args[2]) === 'object') {
-        options = args[2];
-      }
+      [event, callback, options] = args;
     } else if (typeof args[1] === 'string' && !args[2]) {
-      selector = args[1];
+      [event, selector] = args;
     } else if (args[3] || typeof args[2] === 'function') {
-      selector = args[1];
-      callback = args[2];
-      if (args[3] !== null && typeof(args[3]) === 'object') {
-        options = args[3];
-        if (args[4] !== undefined) {
-          node = args[4];
-        }
-      } else if (typeof(args[3]) === 'number') {
-        node = args[3];
+      [event, selector, callback] = args;
+      if (args[3] !== null && typeof args[3] === 'object') {
+        [event, selector, callback, options, node] = args;
+      } else if (typeof args[3] === 'number') {
+        [event, selector, callback, node] = args;
       }
+    } else {
+      [event] = args;
     }
+
+    selector = !selector ? '*' : selector;
 
     return [event, selector, callback, options, node];
   }
-};
+}

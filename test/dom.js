@@ -202,13 +202,13 @@ describe('DOM Manipulation', function() {
 
   it('Should clone with a shallow copy with clone() defaults', function() {
     var clone = doris('#clone-parent').clone();
-    expect(clone.get(0)._doris).to.not.equal(doris('#clone-parent').get(0)._doris);
+    expect(clone.get(0).dorisId).to.not.equal(doris('#clone-parent').get(0).dorisId);
     expect(clone.find('#cloned-brother').length).to.equal(0);
   });
 
   it('Should clone with a deep copy with clone(true)', function() {
     var clone = doris('#clone-parent').clone(true);
-    expect(clone.get(0)._doris).to.not.equal(doris('#clone-parent').get(0)._doris);
+    expect(clone.get(0).dorisId).to.not.equal(doris('#clone-parent').get(0).dorisId);
     expect(clone.find('#cloned-brother').length).to.equal(1);
     expect(clone.find('#cloned-sister').length).to.equal(1);
   });

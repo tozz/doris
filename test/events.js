@@ -6,6 +6,7 @@ describe('Events', function() {
     var x = 0;
     doris('#test-3').on('click', function() { x += 1; });
     doris('#test-3').trigger('click');
+    doris('#test-3').off('click');
     expect(x).to.equal(1);
   });
 
@@ -13,6 +14,7 @@ describe('Events', function() {
     var x = 0;
     doris('#test-3').on('click', function() { x += 1; }, { passive: true });
     doris('#test-3').trigger('click');
+    doris('#test-3').off('click');
     expect(x).to.equal(1);
   });
 
@@ -20,6 +22,7 @@ describe('Events', function() {
     var x = 0;
     doris('#test-1').on('click', '#test-3', function() { x += 1; });
     doris('#test-3').trigger('click');
+    doris('#test-1').off('click');
     expect(x).to.equal(1);
   });
 
@@ -27,6 +30,7 @@ describe('Events', function() {
     var x = 0;
     doris('#test-1').on('click', '#test-3', function() { x += 1; }, { passive: true });
     doris('#test-3').trigger('click');
+    doris('#test-1').off('click');
     expect(x).to.equal(1);
   });
 
@@ -44,14 +48,26 @@ describe('Events', function() {
     expect(y).to.equal(1);
   });
 
-  it('Should only remove one event listeners matching the selector when no callback is given', function() {
+  it('Should only remove one event listener matching the selector when no callback is given', function() {
     var x = 0;
     doris(document).on('click', '#test-1', function() { x += 1; });
     doris(document).on('click', '#test-2', function(e) { x += 1; });
     doris(document).on('click', '#test-3', function() { x += 1; });
     doris(document).off('click', '#test-3');
     doris('#test-3').trigger('click');
+    doris(document).off('click');
     expect(x).to.equal(2);
+  });
+
+  it('Should trigger when event has been added, removed and added again', function() {
+    var x = 0;
+    var f = function() { x += 1; };
+    doris(document).on('click', '#test-1', f);
+    doris(document).off('click', '#test-1', f);
+    doris(document).on('click', '#test-1', f);
+    doris('#test-1').trigger('click');
+    doris(document).off('click', '#test-1');
+    expect(x).to.equal(1);
   });
 
   it('Should not fire when calling off()', function() {
@@ -62,7 +78,7 @@ describe('Events', function() {
     doris('#test-1').on('click', '#test-3', f);
     doris('#test-1').off('click', '#test-3', f);
     doris('#test-2').on('click', f);
-    doris('#test-2').on('click', function() { x+= 1; });
+    doris('#test-2').on('click', function() { x += 1; });
     doris('#test-2').off('click');
     doris('#test-2').trigger('click');
     doris('#test-3').trigger('click');
@@ -74,6 +90,7 @@ describe('Events', function() {
     doris('#test-1').off('click', f2);
     doris('#test-1').on('click', f1);
     doris('#test-1').trigger('click');
+    doris('#test-1').off('click');
     expect(x).to.equal(9);
   });
 
@@ -82,7 +99,8 @@ describe('Events', function() {
     doris('#test-check:not(:checked)').on('click', function(e) {
       e.preventDefault();
     });
-    doris('#test-check:not(:checked)').trigger('click')
+    doris('#test-check:not(:checked)').trigger('click');
+    doris('#test-check').off('click');
     expect(doris('#test-check:not(:checked)').elements.length).to.equal(1);
   });
 
@@ -96,6 +114,8 @@ describe('Events', function() {
     doris('body').on('click', function() { x += 1; });
     doris('#test-1').on('click', function(e) { e.stopPropagation(); x += 1; });
     doris('#test-1').trigger('click');
+    doris('body').off('click');
+    doris('#test-1').off('click');
     expect(x).to.equal(1);
   });
 
@@ -105,6 +125,7 @@ describe('Events', function() {
     doris('#test-1').on('click', function(e) { e.stopImmediatePropagation(); x += 2; });
     doris('#test-1').on('click', function(e) { x += 4; });
     doris('#test-1').trigger('click');
+    doris('#test-1').off('click');
     expect(x).to.equal(3);
   });
 });

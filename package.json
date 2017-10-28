@@ -1,7 +1,7 @@
 {
   "name": "doris",
   "description": "A small jQuery-like utility framework for traversing and manipulating the DOM with some basic event handling.",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "license": "MIT",
   "author": "Erik Johansson <tozz@tozz.org>",
   "repository": {
@@ -12,17 +12,30 @@
     "babel-core": "^6.26",
     "babel-preset-es2015": "^6.24",
     "babelify": "^7.3",
-    "browserify": "^14",
-    "esdoc": "^1",
+    "browserify": "^14.5.0",
+    "esdoc": "^1.0.3",
     "esdoc-standard-plugin": "^1",
-    "uglify-js": "^3.1"
+    "eslint": "^4.10.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-formatter-pretty": "^1.3.0",
+    "eslint-plugin-import": "^2.8.0",
+    "uglify-js": "^3.1.5"
   },
   "scripts": {
-    "build": "browserify src/doris.js > dist/doris.js && browserify src/doris.js | uglifyjs -cm > dist/doris.min.js"
+    "build": "browserify src/doris.js > dist/doris.js && browserify src/doris.js | uglifyjs -cm > dist/doris.min.js",
+    "lint": "eslint --format=node_modules/eslint-formatter-pretty 'src/**/*.js'; exit 0",
+    "docs": "esdoc"
   },
   "browserify": {
     "transform": [
-      ["babelify", {"presets": ["es2015"]}]
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
     ]
   }
 }
