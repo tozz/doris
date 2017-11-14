@@ -239,14 +239,17 @@ var DorisObject = function () {
    * Returns the matched DOM element (zero based index)
    *
    * @param {number} index The index for which element should be returned.
-   * @return {(Node|undefined)}
+   * @param {boolean} doris If the node should be a DorisObject or a normal Node
+   * @return {(Node|DorisObject|undefined)}
    */
 
 
   _createClass(DorisObject, [{
     key: 'get',
     value: function get(index) {
-      return this.elements[index];
+      var doris = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      return doris ? new DorisObject([this.elements[index]]) : this.elements[index];
     }
 
     /**

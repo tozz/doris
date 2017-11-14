@@ -42,10 +42,11 @@ export default class DorisObject {
    * Returns the matched DOM element (zero based index)
    *
    * @param {number} index The index for which element should be returned.
-   * @return {(Node|undefined)}
+   * @param {boolean} doris If the node should be a DorisObject or a normal Node
+   * @return {(Node|DorisObject|undefined)}
    */
-  get(index) {
-    return this.elements[index];
+  get(index, doris = false) {
+    return doris ? new DorisObject([this.elements[index]]) : this.elements[index];
   }
 
   /**
