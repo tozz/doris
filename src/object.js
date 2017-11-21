@@ -54,12 +54,12 @@ export default class DorisObject {
    * For each element call callback where this is a new DorisObject of the
    *     matching element.
    *
-   * @param {function(node: Node, index: number)} callback
+   * @param {function(node: DorisObject, index: number)} callback
    * @return {DorisObject}
    */
   each(callback) {
     Object.keys(this.elements).forEach((i) => {
-      callback.apply(new DorisObject([this.elements[i]]), [this.elements[i], parseInt(i, 10)]);
+      callback.apply(null, [new DorisObject([this.elements[i]]), parseInt(i, 10)]);
     });
     return this;
   }
@@ -271,7 +271,7 @@ export default class DorisObject {
       } else {
         let previousNode = new DorisObject([this.get(e)]);
         replacementValue.each((n) => {
-          const s = m ? n.cloneNode(true) : n;
+          const s = m ? n.get(0).cloneNode(true) : n;
           newCollection.push(s);
           previousNode.after(s);
           previousNode = window.doris(s);
@@ -625,7 +625,7 @@ export default class DorisObject {
             if ((eventData.selector === '*' && target.dorisId === id) ||
               (eventData.selector !== '*' &&
               DorisObject.matchSelector(target, eventData.selector))) {
-              eventData.callback.call(new DorisObject([target]), dorisEvent, target);
+              eventData.callback.call(null, dorisEvent, new DorisObject([target]));
               if (eventData.callback.one) {
                 this.off(dorisEvent.type, eventData.callback.selector, eventData.callback.one, id);
               }

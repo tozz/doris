@@ -257,7 +257,7 @@ var DorisObject = function () {
      * For each element call callback where this is a new DorisObject of the
      *     matching element.
      *
-     * @param {function(node: Node, index: number)} callback
+     * @param {function(node: DorisObject, index: number)} callback
      * @return {DorisObject}
      */
 
@@ -267,7 +267,7 @@ var DorisObject = function () {
       var _this2 = this;
 
       Object.keys(this.elements).forEach(function (i) {
-        callback.apply(new DorisObject([_this2.elements[i]]), [_this2.elements[i], parseInt(i, 10)]);
+        callback.apply(null, [new DorisObject([_this2.elements[i]]), parseInt(i, 10)]);
       });
       return this;
     }
@@ -509,7 +509,7 @@ var DorisObject = function () {
         } else {
           var previousNode = new DorisObject([_this4.get(e)]);
           replacementValue.each(function (n) {
-            var s = m ? n.cloneNode(true) : n;
+            var s = m ? n.get(0).cloneNode(true) : n;
             newCollection.push(s);
             previousNode.after(s);
             previousNode = window.doris(s);
@@ -946,7 +946,7 @@ var DorisObject = function () {
             if (!dorisEvent.immediatePropagationStopped) {
               var eventData = EventList[id].events[dorisEvent.type][i];
               if (eventData.selector === '*' && target.dorisId === id || eventData.selector !== '*' && DorisObject.matchSelector(target, eventData.selector)) {
-                eventData.callback.call(new DorisObject([target]), dorisEvent, target);
+                eventData.callback.call(null, dorisEvent, new DorisObject([target]));
                 if (eventData.callback.one) {
                   _this10.off(dorisEvent.type, eventData.callback.selector, eventData.callback.one, id);
                 }
