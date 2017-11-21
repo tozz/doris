@@ -509,7 +509,7 @@ var DorisObject = function () {
         } else {
           var previousNode = new DorisObject([_this4.get(e)]);
           replacementValue.each(function (n) {
-            var s = m ? n.get(0).cloneNode(true) : n;
+            var s = m ? n.get(0).cloneNode(true) : n.get(0);
             newCollection.push(s);
             previousNode.after(s);
             previousNode = window.doris(s);
@@ -1015,8 +1015,8 @@ var DorisObject = function () {
 
       var options = parsedOptions === undefined ? {} : parsedOptions;
 
-      var wrappedCallback = function wrappedCallback(e) {
-        parsedCallback.call(this, e);
+      var wrappedCallback = function wrappedCallback(e, n) {
+        parsedCallback.call(null, e, n);
       };
       wrappedCallback.one = parsedCallback;
       wrappedCallback.selector = parsedSelector;

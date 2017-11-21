@@ -271,7 +271,7 @@ export default class DorisObject {
       } else {
         let previousNode = new DorisObject([this.get(e)]);
         replacementValue.each((n) => {
-          const s = m ? n.get(0).cloneNode(true) : n;
+          const s = m ? n.get(0).cloneNode(true) : n.get(0);
           newCollection.push(s);
           previousNode.after(s);
           previousNode = window.doris(s);
@@ -681,8 +681,8 @@ export default class DorisObject {
 
     const options = parsedOptions === undefined ? {} : parsedOptions;
 
-    const wrappedCallback = function wrappedCallback(e) {
-      parsedCallback.call(this, e);
+    const wrappedCallback = function wrappedCallback(e, n) {
+      parsedCallback.call(null, e, n);
     };
     wrappedCallback.one = parsedCallback;
     wrappedCallback.selector = parsedSelector;
