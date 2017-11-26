@@ -230,16 +230,17 @@ export default class DorisObject {
    *
    * Removes every element in elements from the DOM and removes the references.
    *
-   * @return {DorisObject}
+   * @return {DorisObject} A DorisObject containing the parent nodes as returned by {@link parent}
    */
   remove() {
+    const parent = this.parent();
     Object.keys(this.elements).forEach((i) => {
       this.elements[i].parentNode.removeChild(this.elements[i]);
       delete this.elements[i];
       delete this[i];
     });
     this.length = this.elements.length;
-    return this;
+    return parent;
   }
 
   /**

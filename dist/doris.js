@@ -458,7 +458,7 @@ var DorisObject = function () {
      *
      * Removes every element in elements from the DOM and removes the references.
      *
-     * @return {DorisObject}
+     * @return {DorisObject} A DorisObject containing the parent nodes as returned by {@link parent}
      */
 
   }, {
@@ -466,13 +466,14 @@ var DorisObject = function () {
     value: function remove() {
       var _this3 = this;
 
+      var parent = this.parent();
       Object.keys(this.elements).forEach(function (i) {
         _this3.elements[i].parentNode.removeChild(_this3.elements[i]);
         delete _this3.elements[i];
         delete _this3[i];
       });
       this.length = this.elements.length;
-      return this;
+      return parent;
     }
 
     /**
