@@ -6,14 +6,12 @@ const EventList = {};
 let elementCount = 0;
 
 /**
- *
  * DorisObject is (as the name suggest) a wrapper for all the functionality.
  *
  * @type {DorisObject}
  */
 export default class DorisObject {
   /**
-   *
    * This class should not be instantiated manually but rather by using the
    *     doris() helper.
    *
@@ -38,7 +36,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Returns the matched DOM element (zero based index)
    *
    * @param {number} index The index for which element should be returned.
@@ -50,7 +47,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * For each element call callback where this is a new DorisObject of the
    *     matching element.
    *
@@ -65,7 +61,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Check if the first element matches the selector.
    *
    * @param {string} selector CSS Selector
@@ -76,7 +71,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Find matching parent nodes.
    * If two children has the same parent the parent node will only appear
    *     once in the return value.
@@ -93,7 +87,7 @@ export default class DorisObject {
         let t = element.parentNode;
         let match = false;
 
-        while (t.tagName !== 'HTML' && t.tagName !== undefined) {
+        while (t && t.tagName !== 'HTML' && t.tagName !== undefined) {
           match = DorisObject.matchSelector(t, selector);
           if (match) { break; }
           t = t.parentNode;
@@ -102,8 +96,9 @@ export default class DorisObject {
         if (match && list.indexOf(t) < 0) {
           list.push(t);
         }
-      } else if (element.parentNode.tagName !== 'HTML' &&
-          list.indexOf(element.parentNode) < 0) {
+      } else if (element && element.parentNode
+        && element.parentNode.tagName !== 'HTML'
+        && list.indexOf(element.parentNode) < 0) {
         list.push(element.parentNode);
       }
     });
@@ -111,7 +106,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Find matching child nodes.
    *
    * @param {string} selector CSS Selector to match.
@@ -136,7 +130,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Prepends nodes in the DOM.
    *
    * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
@@ -158,7 +151,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Appends nodes in the DOM.
    *
    * @param {(DorisObject|Node|string)} dom A Node or string representation of the DOM nodes to
@@ -185,7 +177,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Insert DOM element(s) before the elements.
    *
    * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
@@ -203,7 +194,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Insert DOM element(s) after the elements.
    *
    * @param {(Node|string)} dom A Node or string representation of the DOM nodes to
@@ -227,28 +217,58 @@ export default class DorisObject {
   }
 
   /**
+   * Returns the next element based on the last element in the collection
    *
+   * @return {DorisObject|boolean} A DorisObject containing next node or false if there isn't one.
+   */
+  next() {
+    const empty = new DorisObject([]);
+    if (this.elements.length > 0) {
+      const nextSibling = this.elements[this.elements.length - 1].nextElementSibling;
+      return nextSibling ? new DorisObject([nextSibling]) : empty;
+    }
+    return empty;
+  }
+
+  /**
+   * Returns the previous element based on the first element in the collection
+   *
+   * @return {DorisObject|boolean} A DorisObject containing previous node or
+   * false if there isn't one.
+   */
+  previous() {
+    const empty = new DorisObject([]);
+    if (this.elements.length > 0) {
+      const previousSibling = this.elements[0].previousElementSibling;
+      return previousSibling ? new DorisObject([previousSibling]) : empty;
+    }
+    return empty;
+  }
+
+  /**
    * Removes every element in elements from the DOM and removes the references.
    *
    * @return {DorisObject} A DorisObject containing the parent nodes as returned by {@link parent}
    */
   remove() {
     const parent = this.parent();
-    Object.keys(this.elements).forEach((i) => {
-      this.elements[i].parentNode.removeChild(this.elements[i]);
-      delete this.elements[i];
-      delete this[i];
-    });
-    this.length = this.elements.length;
-    return parent;
+    if (parent.length > 0) {
+      Object.keys(this.elements).forEach((i) => {
+        this.elements[i].parentNode.removeChild(this.elements[i]);
+        delete this.elements[i];
+        delete this[i];
+      });
+      this.length = this.elements.length;
+      return parent;
+    }
+    return new DorisObject([]);
   }
 
   /**
-   *
    * Replaces every element, depending on how many elements are in the collection
-   * the supplied nodes will be cloned. The elements in the original Object
-   * aren't updated, after replacing content you probably want to create a new
-   * doris object that matches on the new content.
+   *    the supplied nodes will be cloned. The elements in the original Object
+   *    aren't updated, after replacing content you probably want to create a new
+   *    doris object that matches on the new content.
    *
    * @param {(string|DorisObject)} replacement A string representation of the DOM you want to
    * use as the replacement or a Doris instance.
@@ -285,7 +305,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Returns a new DorisObject containing a cloned copy of the previous one.
    *
    * @param {(boolean)} [deep] If the cloning should be deep or not (shallow)
@@ -304,9 +323,8 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Returns the HTML content of the first element or sets the innerHTML
-   * of every matched element.
+   *    of every matched element.
    *
    * @param {(string|Node)} [html] A string representation of the DOM to use as replacement
    * or a Node representation that will to converted to markup.
@@ -320,7 +338,7 @@ export default class DorisObject {
     let newHTML = html;
 
     if (typeof newHTML !== 'string') {
-      newHTML = doris(newHTML).toHTML();
+      newHTML = DorisObject([newHTML]).toHTML();
     }
 
     Object.keys(this.elements).forEach((e) => {
@@ -331,9 +349,8 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Returns the textContent of the matching elements or sets the textContent
-   * of the first matching element.
+   *    of the first matching element.
    *
    * @param {(string|Node)} [text] Text to set in all matching elements.
    * @return {(string|DorisObject)}
@@ -355,7 +372,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Adds class(es) to every element. This is using the native classList
    *     implementation.
    *
@@ -376,7 +392,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Removes class(es) from every element. This is using the native
    *     classList implementation.
    *
@@ -397,7 +412,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Checks if class is set on the first element. This is using the native
    *     classList implementation.
    *
@@ -412,7 +426,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Toggles class of every element. This is using the native classList
    *     implementation.
    *
@@ -427,7 +440,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Sets attribute to all elements and reads from the first.
    *
    * @param {string} name
@@ -439,7 +451,8 @@ export default class DorisObject {
   attribute(name, value) {
     if (value === undefined) {
       return this.elements[0].getAttribute(name);
-    } else if (value === false) {
+    }
+    if (value === false) {
       Object.values(this.elements).forEach((element) => {
         element.removeAttribute(name);
       });
@@ -453,7 +466,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Removes attribute from all elements.
    *
    * @param {string} attribute
@@ -467,7 +479,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Set CSS styles, returns the CSS property value of the first element if
    *     no value is specified.
    *
@@ -494,7 +505,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Width of the first element (the inner height if the first element is
    *     window).
    *
@@ -509,7 +519,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Height of the first element (the inner height if the first element is
    *     window).
    *
@@ -524,7 +533,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Size of the first element via getBoundingClientRect().
    *
    * @return {Object.<string, number>}
@@ -534,7 +542,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Returns the offset (from top left) of the first element.
    *
    * @property {number} top
@@ -558,7 +565,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Sets data to all elements and reads from the first.
    *
    * @param {string} key Key to store or read from (will be automatically
@@ -588,10 +594,9 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Binds events on elements, can match on selectors. Callback will receive a DorisEvent
-   * and the target of the bound element, not the element that triggered the event, it will
-   * be available on DorisEvent.originalEvent.target as usual.
+   *    and the target of the bound element, not the element that triggered the event, it will
+   *    be available on DorisEvent.nativeEvent.target as usual.
    *
    * @param {string} event Name of event.
    * @param {...(string|function|object)} [args] Selector, Callback and Options arguments
@@ -609,8 +614,10 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   on(event, ...args) {
-    const [parsedEvent, parsedSelector, parsedCallback, parsedOptions] =
-      DorisObject.parseEventArguments([event, ...args]);
+    const [parsedEvent,
+      parsedSelector,
+      parsedCallback,
+      parsedOptions] = DorisObject.parseEventArguments([event, ...args]);
     const options = parsedOptions === undefined ? false : parsedOptions;
 
     const caller = (id, e) => {
@@ -623,9 +630,9 @@ export default class DorisObject {
         Object.keys(EventList[id].events[dorisEvent.type]).forEach((i) => {
           if (!dorisEvent.immediatePropagationStopped) {
             const eventData = EventList[id].events[dorisEvent.type][i];
-            if ((eventData.selector === '*' && target.dorisId === id) ||
-              (eventData.selector !== '*' &&
-              DorisObject.matchSelector(target, eventData.selector))) {
+            if ((eventData.selector === '*' && target.dorisId === id)
+              || (eventData.selector !== '*'
+                && DorisObject.matchSelector(target, eventData.selector))) {
               eventData.callback.call(null, dorisEvent, new DorisObject([target]));
               if (eventData.callback.one) {
                 this.off(dorisEvent.type, eventData.callback.selector, eventData.callback.one, id);
@@ -668,7 +675,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Binds an event that will only happen once.
    *
    * @see {@link on}
@@ -677,8 +683,10 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   once(event, ...args) {
-    const [parsedEvent, parsedSelector, parsedCallback, , parsedOptions] =
-      DorisObject.parseEventArguments([event, ...args]);
+    const [parsedEvent,
+      parsedSelector,
+      parsedCallback, ,
+      parsedOptions] = DorisObject.parseEventArguments([event, ...args]);
 
     const options = parsedOptions === undefined ? {} : parsedOptions;
 
@@ -694,7 +702,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Unbind events
    *
    * @param {string} event name of event.
@@ -711,8 +718,10 @@ export default class DorisObject {
    * @return {DorisObject}
    */
   off(event, ...args) {
-    const [parsedEvent, parsedSelector, parsedCallback, , parsedNode] =
-          DorisObject.parseEventArguments([event, ...args]);
+    const [parsedEvent,
+      parsedSelector,
+      parsedCallback, ,
+      parsedNode] = DorisObject.parseEventArguments([event, ...args]);
 
     Object.values(this.elements).forEach((element) => {
       const id = element.dorisId;
@@ -751,7 +760,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Fires an event
    *
    * @param {(string|Event)} event
@@ -777,7 +785,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Returns a string representation of the elements.
    * @return {string}
    */
@@ -791,7 +798,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Matches a selector on an element.
    * @private
    */
@@ -804,7 +810,6 @@ export default class DorisObject {
   }
 
   /**
-   *
    * Argument parsing for event handling.
    * @private
    */
