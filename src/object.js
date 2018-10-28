@@ -338,7 +338,7 @@ export default class DorisObject {
     let newHTML = html;
 
     if (typeof newHTML !== 'string') {
-      newHTML = DorisObject([newHTML]).toHTML();
+      newHTML = new DorisObject([newHTML]).toHTML();
     }
 
     Object.keys(this.elements).forEach((e) => {
