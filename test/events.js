@@ -128,4 +128,17 @@ describe('Events', function() {
     doris('#test-1').off('click');
     expect(x).to.equal(3);
   });
+
+  it('Should bind once to multiple elements and unbind properly with off()', function() {
+    var x = 0;
+    var increase = function() {
+      x += 1;
+    };
+    doris('.bind-one, .bind-two').once('click', increase);
+    doris('.bind-one').trigger('click');
+    expect(x).to.equal(1);
+    doris('.bind-one, .bind-two').off('click');
+    doris('.bind-two').trigger('click')
+    expect(x).to.equal(1);
+  });
 });
